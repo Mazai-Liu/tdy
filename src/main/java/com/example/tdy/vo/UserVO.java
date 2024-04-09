@@ -1,5 +1,19 @@
-package com.example.tdy.vo;/**
- * @time 2024/4/9
+package com.example.tdy.vo;
+
+import lombok.Data;
+
+/**
  * @author Mazai-Liu
- */public class UserVO {
+ * @time 2024/4/9
+ */
+
+@Data
+public class UserVO {
+    private Integer id;
+    private Integer avatar;
+    private String nickname;
+    private Integer sex;
+    private Integer follows;
+    private Integer fans;
+    private String description;
 }

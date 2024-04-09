@@ -2,17 +2,17 @@ package com.example.tdy.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Mazai-Liu
- * @time 2024/4/2
+ * @time 2024/3/26
  */
 
 @Data
-public class File {
+public class Follow {
     private Integer id;
-    private String fileKey;
-    private String type;
-    private String format;
-    private Long size;
     private Integer userId;
+    private Integer followId;
+    private LocalDateTime createTime;
 }

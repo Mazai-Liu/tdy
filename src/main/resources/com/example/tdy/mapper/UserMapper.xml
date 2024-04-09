@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.tdy.mapper.UserMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into user(email, phone, password, avatar, gender, nickname, description, default_favorite, state)
+        values(#{email}, #{phone}, #{password}, #{avatar}, #{gender}, #{nickname}, #{description}, #{defaultFavorite}, #{state})
+    </insert>
+    <update id="update">
+        update user
+        <set>
+            <if test="email != null">
+                email = #{email}
+            </if>
+            <if test="phone != null">
+                phone = #{phone}
+            </if>
+            <if test="password != null">
+                password = #{password}
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar}
+            </if>
+            <if test="gender != null">
+                gender = #{gender}
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname}
+            </if>
+            <if test="description != null">
+                description = #{description}
+            </if>
+            <if test="state != null">
+                state = #{state}
+            </if>
+            <if test="defaultFavorite != null">
+                default_favorite = #{defaultFavorite}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="selectByUser" resultType="com.example.tdy.entity.User">
+        select * from user
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="email != null">
+                email = #{email}
+            </if>
+            <if test="phone != null">
+                phone = #{phone}
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname}
+            </if>
+            <if test="gender != null">
+                gender = #{gender}
+            </if>
+            <if test="description != null">
+                description = #{description}
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar}
+            </if>
+            <if test="state != null">
+                state = #{state}
+            </if>
+            <if test="defaultFavorite != null">
+                default_favorite = #{defaultFavorite}
+            </if>
+            <if test="password != null">
+                password = #{password}
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="selectByUserIds" resultType="com.example.tdy.entity.User">
+        select * from user where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        ORDER BY FIELD(id,
+        <foreach collection="ids" item="id" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

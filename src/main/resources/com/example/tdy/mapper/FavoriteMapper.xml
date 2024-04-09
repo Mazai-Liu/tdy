@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.tdy.mapper.FavoriteMapper">
+    <update id="update">
+        update favorite
+        <set>
+            <if test="name != null">
+                name = #{name}
+            </if>
+            <if test="size != null">
+                size = #{size}
+            </if>
+            <if test="open != null">
+                open = #{open}
+            </if>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="description != null">
+                description = #{description}
+            </if>
+            <if test="state != null">
+                state = #{state}
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                update_time = #{update}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteByIds">
+        delete from favorite where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
