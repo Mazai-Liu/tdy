@@ -1,6 +1,7 @@
 package com.example.tdy.mapper;
 
 import com.example.tdy.entity.Favorite;
+import com.example.tdy.entity.FavoriteVideo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -27,4 +28,11 @@ public interface FavoriteMapper {
     void update(Favorite favorite);
 
     void deleteByIds(List<Integer> ids);
+
+    @Insert("insert into favorite_video(favorite_id, video_id, create_time, update_time) " +
+            "values(#{favoriteId}, #{videoId}, #{createTime}, #{updateTime})")
+    void insertFavoriteVideo(FavoriteVideo record);
+
+    @Select("select * from favorite_video where favorite_id = #{fid}")
+    List<FavoriteVideo> getFavoriteVideoByFavoriteId(Integer fid);
 }

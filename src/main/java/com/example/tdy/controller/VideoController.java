@@ -43,4 +43,15 @@ public class VideoController {
         Map<String, List<Video>> result = videoService.getHistory(basePage);
         return R.ok(result);
     }
+    @PostMapping("/favorites/{fid}/{vid}")
+    public R favorite(@PathVariable Integer fid, @PathVariable Integer vid) {
+        videoService.favorite(fid, vid);
+        return R.ok("已收藏");
+    }
+
+    @GetMapping("/favorite/{fid}")
+    public R<List<Video>> getFavorite(@PathVariable Integer fid) {
+        List<Video> videos = videoService.getByFavoriteId(fid);
+        return R.ok(videos);
+    }
 }

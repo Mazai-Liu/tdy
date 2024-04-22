@@ -1,8 +1,12 @@
 package com.example.tdy.service.impl;
 
 import com.example.tdy.context.BaseContext;
+import com.example.tdy.entity.Subscribe;
+import com.example.tdy.entity.Type;
 import com.example.tdy.entity.User;
 import com.example.tdy.exception.BaseException;
+import com.example.tdy.mapper.SubscribeMapper;
+import com.example.tdy.mapper.TypeMapper;
 import com.example.tdy.mapper.UserMapper;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
@@ -14,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Mazai-Liu
@@ -32,6 +34,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FollowService followService;
+
+    @Autowired
+    private SubscribeMapper subscribeMapper;
+
+    @Autowired
+    private TypeMapper typeMapper;
 
 
     @Override
@@ -168,6 +176,48 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, userVO);
 
         return userVO;
+    }
+
+    @Override
+    public void subscribe(String types) {
+        List<String> list = Arrays.asList(types.split(","));
+        List<Subscribe> subscribes = new ArrayList<>();
+        Integer currentId = BaseContext.getCurrentId();
+        list.forEach(type -> {
+            subscribes.add(new Subscribe(currentId, Integer.parseInt(type)));
+        });
+
+        subscribeMapper.insertBatch(subscribes);
+    }
+
+    @Override
+    public List<Type> getSubscribe() {
+        List<Integer> subscribed = subscribeMapper.selectByUserId(BaseContext.getCurrentId()).stream().
+                                                        map(Subscribe::getTypeId).
+                                                        collect(Collectors.toList());
+
+
+        return subscribed.isEmpty() ? new ArrayList<Type>() : typeMapper.selectByIds(subscribed);
+    }
+
+    @Override
+    public List<Type> getNoSubscribe() {
+        // 获取所有分类
+        List<Integer> all = typeMapper.selectAll().stream().
+                                                        map(Type::getId).
+                                                        collect(Collectors.toList());
+        // 获取用户订阅的分类
+        List<Integer> subscribedIds = subscribeMapper.selectByUserId(BaseContext.getCurrentId()).stream().
+                                                                    map(Subscribe::getTypeId).
+                                                                    collect(Collectors.toList());
+
+        Set<Integer> subscribed = new HashSet<>(subscribedIds);
+        // 获得用户没有订阅的分类
+        List<Integer> noSubscribed = all.stream().
+                                                filter(id -> !subscribed.contains(id)).
+                                                collect(Collectors.toList());
+
+        return noSubscribed.isEmpty() ? new ArrayList<Type>() :typeMapper.selectByIds(noSubscribed);
     }
 }
 

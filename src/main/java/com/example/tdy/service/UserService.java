@@ -1,6 +1,8 @@
 package com.example.tdy.service;
 
 import com.example.tdy.entity.Favorite;
+import com.example.tdy.entity.Subscribe;
+import com.example.tdy.entity.Type;
 import com.example.tdy.entity.User;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.BasePage;
@@ -25,4 +27,10 @@ public interface UserService {
     User getById(Integer id);
 
     UserVO getUserVoById(Integer userId);
+
+    void subscribe(String types);
+
+    List<Type> getSubscribe();
+
+    List<Type> getNoSubscribe();
 }

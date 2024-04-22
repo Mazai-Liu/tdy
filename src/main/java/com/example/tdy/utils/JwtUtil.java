@@ -22,8 +22,6 @@ public class JwtUtil {
     private static final String SECRET = "Mazai-Liu";
     private static final long EXPIRATION = 1000 * 60 * 60 * 24 * 7;
 
-
-
     /**
      * 生成jwt
      * 使用Hs256算法, 私匙使用固定秘钥

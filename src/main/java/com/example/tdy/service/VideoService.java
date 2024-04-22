@@ -4,6 +4,7 @@ import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,4 +32,8 @@ public interface VideoService {
      * @return
      */
     Map<String, List<Video>> getHistory(BasePage basePage);
+
+    void favorite(Integer fid, Integer vid);
+
+    List<Video> getByFavoriteId(Integer fid);
 }

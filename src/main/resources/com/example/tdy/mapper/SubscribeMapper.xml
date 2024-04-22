@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tdy.mapper.SubscribeMapper">
+
+    <insert id="insertBatch">
+        insert into subscribe(user_id, type_id, create_time, update_time) values
+        <foreach collection="subs" item="sub" separator=",">
+            (#{sub.userId}, #{sub.typeId}, #{sub.createTime}, #{sub.updateTime})
+        </foreach>
+    </insert>
+
+</mapper>

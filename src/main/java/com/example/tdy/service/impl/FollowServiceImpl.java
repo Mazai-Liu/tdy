@@ -124,6 +124,8 @@ public class FollowServiceImpl implements FollowService {
         String key = RedisConstant.USER_FOLLOW + currentId;
         double score = System.currentTimeMillis();
         stringRedisTemplate.opsForZSet().add(key, String.valueOf(followId), score);
+        stringRedisTemplate.expire(key, RedisConstant.FOLLOW_FANS_TIMEOUT, RedisConstant.FOLLOW_FANS_TIMEOUT_UNIT);
+
         // 写粉丝
         key = RedisConstant.USER_FANS + followId;
         stringRedisTemplate.opsForZSet().add(key, String.valueOf(currentId), score);

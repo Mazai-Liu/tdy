@@ -2,6 +2,7 @@ package com.example.tdy.controller;
 
 import com.example.tdy.dto.UpdateFavoriteDto;
 import com.example.tdy.entity.Favorite;
+import com.example.tdy.entity.Type;
 import com.example.tdy.entity.User;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.BasePage;
@@ -91,5 +92,23 @@ public class UserController {
         System.out.println(ids);
         favoriteService.deleteByIds(ids);
         return R.ok();
+    }
+
+    @PostMapping("/subscribe")
+    public R subscribe(String types) {
+        userService.subscribe(types);
+        return R.ok();
+    }
+
+    @GetMapping("/subscribe")
+    public R<List<Type>> getSubscribe() {
+        List<Type> types = userService.getSubscribe();
+        return R.ok(types);
+    }
+
+    @GetMapping("/noSubscribe")
+    public R<List<Type>> getNoSubscribe() {
+        List<Type> types = userService.getNoSubscribe();
+        return R.ok(types);
     }
 }
