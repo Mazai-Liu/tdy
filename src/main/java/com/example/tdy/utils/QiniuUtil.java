@@ -24,7 +24,7 @@ public class QiniuUtil {
     @Value("${qiniu.secret-key}")
     private String SECRET_KEY;
 
-    public static final String CNAME = "sawgohrh2.hn-bkt.clouddn.com";
+    public static final String CNAME = "scys30o00.hb-bkt.clouddn.com";
 
     public static final String PROTOCOL = "http";
 

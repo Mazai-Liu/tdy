@@ -3,6 +3,8 @@ package com.example.tdy.entity;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Mazai-Liu
@@ -18,4 +20,8 @@ public class Type {
     private String label;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+
+    public List<String> buildLabel(){
+        return Arrays.asList(label.split(","));
+    }
 }

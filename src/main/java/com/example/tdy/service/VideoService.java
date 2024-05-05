@@ -1,5 +1,6 @@
 package com.example.tdy.service;
 
+import com.example.tdy.entity.HotVideo;
 import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.BasePage;
@@ -36,4 +37,12 @@ public interface VideoService {
     void favorite(Integer fid, Integer vid);
 
     List<Video> getByFavoriteId(Integer fid);
+
+    List<Video> pushVideos(Integer userId);
+
+    List<Video> getSimilarVideo(Video video);
+
+    List<Video> getHotVideo();
+
+    List<HotVideo> getHotVideoRank();
 }

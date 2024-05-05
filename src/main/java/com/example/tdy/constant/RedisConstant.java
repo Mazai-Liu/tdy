@@ -18,12 +18,24 @@ public class RedisConstant {
     public static final String TOKEN_PREFIX = "login:token:";
     public static final long TOKEN_TIMEOUT = 7;
     public static final TimeUnit TOKEN_TIMEOUT_UNIT = TimeUnit.DAYS;
-    public static final String USER_FOLLOW = "user:follow:";
 
+    public static final String USER_FOLLOW = "user:follow:";
     public static final String USER_FANS = "user:fans:";
     public static final String VIDEO_HISTORY = "video:history:";
     public static final long BROWSE_HISTORY_TIMEOUT = 7;
     public static final TimeUnit BROWSE_HISTORY_TIMEOUT_UNIT = TimeUnit.DAYS;
     public static final long FOLLOW_FANS_TIMEOUT = 1;
     public static final TimeUnit FOLLOW_FANS_TIMEOUT_UNIT = TimeUnit.DAYS;
+
+
+    public static final String USER_MODEL = "user:model:";
+    public static final String SYSTEM_STOCK = "system:stock:";
+    /**
+     * 某视频已推送过用户 history:video:videoId   userId
+     */
+    public static final String HISTORY_VIDEO = "history:video:";
+    public static final String USER_OUTBOX = "user:outbox:";
+    public static final String USER_INBOX = "user:inbox:";
+    public static final String HOT_VIDEO = "video:hot:";
+    public static final String HOT_VIDEO_RANK = "video:hot:rank:";
 }

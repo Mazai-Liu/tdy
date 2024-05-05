@@ -7,7 +7,7 @@
         values(#{title}, #{url}, #{lv}, #{cover}, #{userId}, #{description}, #{open}, #{typeId}, #{browses},
                #{likes}, #{shares}, #{auditStatus}, #{comments}, #{favorites}, #{duration}, #{createTime}, #{updateTime}, #{auditMsg})
     </insert>
-    <update id="update">
+    <update id="update" useGeneratedKeys="true" keyProperty="id">
         update video
         <set>
             <if test="title != null">

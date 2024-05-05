@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface TypeService {
     List<Type> getTypes();
+
+    List<String> random10Labels();
 }

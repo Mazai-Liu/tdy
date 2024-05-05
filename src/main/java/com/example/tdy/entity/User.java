@@ -18,7 +18,7 @@ public class User {
     private Integer avatar;
     private String nickname;
     private String description;
-    private String gender;
+    private Integer gender;
     private Integer state;
     private Integer defaultFavorite;
     private Integer follow;
