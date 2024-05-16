@@ -23,7 +23,6 @@ public class QiniuUtil {
     private String ACCESS_KEY;
     @Value("${qiniu.secret-key}")
     private String SECRET_KEY;
-
     public static final String CNAME = "scys30o00.hb-bkt.clouddn.com";
 
     public static final String PROTOCOL = "http";
@@ -40,6 +39,10 @@ public class QiniuUtil {
         return auth.uploadToken(BUCKET_NAME);
     }
 
+    public Auth getAuth() {
+        return Auth.create(ACCESS_KEY, SECRET_KEY);
+    }
+
 
     public FileInfo getFileInfo(String fileKey) {
         Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
@@ -53,5 +56,10 @@ public class QiniuUtil {
         }
 
         return fileInfo;
+    }
+
+    public String getQiNiuToken(String url, String method, String body, String contentType) {
+        Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
+        return "Qiniu " + auth.signQiniuAuthorization(url, method, body == null ? null : body.getBytes(), contentType);
     }
 }

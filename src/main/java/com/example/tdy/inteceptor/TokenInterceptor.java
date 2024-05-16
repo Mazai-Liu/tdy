@@ -39,7 +39,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         // userid
         String data = stringRedisTemplate.opsForValue().get(key);
         if(StringUtils.isEmpty(data)) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            //response.setStatus(HttpStatus.UNAUTHORIZED.value());
 //            return false;
             return true;
         }

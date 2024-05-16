@@ -1,7 +1,11 @@
 package com.example.tdy.service.impl;
 
 import com.example.tdy.constant.RedisConstant;
+import com.example.tdy.context.BaseContext;
+import com.example.tdy.dto.UerModelDTO;
 import com.example.tdy.entity.User;
+import com.example.tdy.entity.Video;
+import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.service.InterestPushService;
 import com.example.tdy.service.TypeService;
 import com.example.tdy.utils.RedisUtil;
@@ -30,6 +34,9 @@ public class InterestPushServiceImpl implements InterestPushService {
 
     @Autowired
     private TypeService typeService;
+
+    @Autowired
+    private VideoMapper videoMapper;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -131,6 +138,28 @@ public class InterestPushServiceImpl implements InterestPushService {
         return videoIds;
     }
 
+    @Override
+    public void updateUserModel(UerModelDTO userModelDto) {
+        Integer currentId = BaseContext.getCurrentId();
+
+        Integer videoId = userModelDto.getId();
+        Video video = videoMapper.selectById(videoId);
+        List<String> labels = video.buildLabel();
+
+        String key = RedisConstant.USER_MODEL + currentId;
+        // key为label，value为分数
+        Map<Object, Object> modelMap = stringRedisTemplate.opsForHash().entries(key);
+        Double score = userModelDto.getScore();
+        if(modelMap.isEmpty()) {
+            labels.forEach(label -> {
+                if(modelMap.containsKey(label)) {
+                    stringRedisTemplate.opsForHash().increment(key, label, score);
+                } else {
+                    stringRedisTemplate.opsForHash().put(key, label, score.toString());
+                }
+            });
+        }
+    }
 
 
     public Integer randomVideoId(Integer sex) {

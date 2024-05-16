@@ -7,6 +7,7 @@ import com.example.tdy.entity.FavoriteVideo;
 import com.example.tdy.entity.HotVideo;
 import com.example.tdy.entity.User;
 import com.example.tdy.entity.Video;
+import com.example.tdy.entity.task.VideoTask;
 import com.example.tdy.enums.AuditStatus;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.FavoriteMapper;
@@ -14,16 +15,16 @@ import com.example.tdy.mapper.UserMapper;
 import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
-import com.example.tdy.service.FileService;
-import com.example.tdy.service.InterestPushService;
-import com.example.tdy.service.UserService;
-import com.example.tdy.service.VideoService;
+import com.example.tdy.service.*;
+import com.example.tdy.service.audit.VideoPublishAuditServiceImpl;
 import com.example.tdy.utils.FileUtil;
 import com.example.tdy.utils.GenerateIdUtil;
 import com.example.tdy.utils.RedisUtil;
 import com.example.tdy.vo.UserVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;
@@ -46,11 +47,19 @@ import java.util.stream.Collectors;
 @Service
 public class VideoServiceImpl implements VideoService {
 
+    public static Logger logger = LoggerFactory.getLogger(VideoServiceImpl.class);
+
     @Autowired
     private VideoMapper videoMapper;
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private FollowService followService;
+
+    @Autowired
+    private FeedService feedService;
 
     @Autowired
     private UserService userService;
@@ -70,6 +79,9 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private FavoriteMapper favoriteMapper;
 
+    @Autowired
+    private VideoPublishAuditServiceImpl videoPublishAuditService;
+
     final private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -77,6 +89,7 @@ public class VideoServiceImpl implements VideoService {
         final Integer userId = BaseContext.getCurrentId();
 
         final Integer videoId = video.getId();
+        boolean isAdd = true;
         // 修改视频
         if (videoId != null) {
             // TODO 新、旧url不能一致
@@ -97,7 +110,7 @@ public class VideoServiceImpl implements VideoService {
 
             // 如果没有封面，则设置默认
             if(ObjectUtils.isEmpty(video.getCover())) {
-                video.setCover(fileService.setDefaultCover(video.getUrl(), userId));
+                video.setCover(fileService.setDefaultCover(Integer.parseInt(video.getUrl()), userId));
             }
 
             // set YV
@@ -105,7 +118,7 @@ public class VideoServiceImpl implements VideoService {
 
             // 填充视频时长
             // TODO
-            video.setDuration(FileUtil.getDuration(video.getUrl()));
+            video.setDuration(FileUtil.getDuration(Integer.parseInt(video.getUrl())));
 
             // 填充时间
             video.setCreateTime(LocalDateTime.now());
@@ -113,9 +126,21 @@ public class VideoServiceImpl implements VideoService {
 
             videoMapper.insert(video);
 
+            // TODO 视频审核
+            logger.info("开始视频审核");
+            final VideoTask videoTask = new VideoTask();
+            videoTask.setOldVideo(video);
+            videoTask.setVideo(video);
+            videoTask.setIsAdd(isAdd);
+            videoTask.setOldState(isAdd ? true : video.getOpen() == 1);
+            videoTask.setNewState(true);
+            videoPublishAuditService.audit(videoTask);
+
+            System.out.println(videoTask.getVideo().getAuditStatus());
+            System.out.println(videoTask.getVideo().getAuditMsg());
+
             // 加入用户发件箱
-            // TODO 审核后加入
-            redisUtil.addOutbox(userId, video);
+            // redisUtil.addOutbox(userId, video);//
         }
 
 
@@ -220,8 +245,11 @@ public class VideoServiceImpl implements VideoService {
         // 推送
         Collection<Integer> videoIds = interestPushService.listByUserModel(user);
 
+        if(ObjectUtils.isEmpty(videoIds))
+            return new ArrayList<>();
+
         // 获取视频
-        List<Video> videos = videoMapper.selectByIds((List<Integer>) videoIds);
+        List<Video> videos = videoMapper.selectByIds(new ArrayList<>(videoIds));
 
         // 封装userVO
         // TODO 可能还需要补充url
@@ -330,6 +358,35 @@ public class VideoServiceImpl implements VideoService {
             }
         }
         return hotVideos;
+    }
+
+    @Override
+    public List<Video> followFeed(Integer userId, Long lastTime) {
+        String key = RedisConstant.USER_INBOX + userId;
+        Set<String> videoIds = stringRedisTemplate.opsForZSet().reverseRangeByScore(key,
+                0, lastTime == null ? new Date().getTime() : lastTime, lastTime == null ? 0 : 1, 5);
+        if(ObjectUtils.isEmpty(videoIds)) {
+            // 可能只是缓存中没有了,缓存只存储7天内的关注视频,继续往后查看关注的用户太少了,不做考虑 - feed流必然会产生的问题
+            return new ArrayList<>();
+        }
+
+        List<Integer> ids = videoIds.stream().map(Integer::parseInt).collect(Collectors.toList());
+
+        // TODO 顺序？
+        List<Video> videos = videoMapper.selectByIds(ids);
+        // TODO 可能还需要补充url
+        videos.forEach(video -> {
+            video.setUser(userService.getUserVoById(video.getUserId()));
+        });
+
+
+        return videos;
+    }
+
+    @Override
+    public void initFollowFeed(Integer userId) {
+        List<Integer> followIds = followService.getFollows(userId, null);
+        feedService.initFollowFeed(userId, followIds);
     }
 
 }

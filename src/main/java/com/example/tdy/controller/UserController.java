@@ -1,5 +1,6 @@
 package com.example.tdy.controller;
 
+import com.example.tdy.dto.UerModelDTO;
 import com.example.tdy.dto.UpdateFavoriteDto;
 import com.example.tdy.entity.Favorite;
 import com.example.tdy.entity.Type;
@@ -9,6 +10,7 @@ import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
 import com.example.tdy.result.R;
 import com.example.tdy.service.FavoriteService;
+import com.example.tdy.service.InterestPushService;
 import com.example.tdy.service.UserService;
 import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
@@ -35,6 +37,9 @@ public class UserController {
 
     @Autowired
     private FavoriteService favoriteService;
+
+    @Autowired
+    private InterestPushService interestPushService;
 
     @PostMapping("/follows")
     public R follow(Integer followId) throws BaseException {
@@ -110,5 +115,11 @@ public class UserController {
     public R<List<Type>> getNoSubscribe() {
         List<Type> types = userService.getNoSubscribe();
         return R.ok(types);
+    }
+
+    @PostMapping("/updateUserModel")
+    public R updateUserModel(@RequestBody UerModelDTO userModelDto) {
+        interestPushService.updateUserModel(userModelDto);
+        return R.ok();
     }
 }

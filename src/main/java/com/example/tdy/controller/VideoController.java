@@ -2,6 +2,7 @@ package com.example.tdy.controller;
 
 import com.example.tdy.constant.SystemConstant;
 import com.example.tdy.constant.VideoConstant;
+import com.example.tdy.context.BaseContext;
 import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.BasePage;
@@ -53,5 +54,29 @@ public class VideoController {
     public R<List<Video>> getFavorite(@PathVariable Integer fid) {
         List<Video> videos = videoService.getByFavoriteId(fid);
         return R.ok(videos);
+    }
+
+    /**
+     * 从收件箱获取关注的人的视频，。拉模式（从关注的人的发件箱 拉到 自己的收件箱）
+     * @param lastTime  上次推送的时间
+     * @return
+     */
+    @GetMapping("/follow/feed")
+    public R<List<Video>> followFeed(@RequestParam(required = false) Long lastTime) {
+        Integer userId = BaseContext.getCurrentId();
+
+        List<Video> videos = videoService.followFeed(userId, lastTime);
+        return R.ok(videos);
+    }
+
+    /**
+     * 初始化收件箱
+     * @return
+     */
+    @PostMapping("/init/follow/feed")
+    public R initFollowFeed(){
+        Integer userId = BaseContext.getCurrentId();
+        videoService.initFollowFeed(userId);
+        return R.ok();
     }
 }

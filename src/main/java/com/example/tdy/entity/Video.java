@@ -21,7 +21,7 @@ public class Video {
     private String title;
     private String description;
     private String label;
-    private Integer url;
+    private String url;
     private Integer cover;
     private String lv;
     private String duration;
@@ -47,10 +47,10 @@ public class Video {
      * 审核状态：0审核中，1审核通过，2审核不通过
      */
     private Integer auditStatus;
+    private String auditMsg;
 
     private Integer typeId;
 
-    private String auditMsg;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 

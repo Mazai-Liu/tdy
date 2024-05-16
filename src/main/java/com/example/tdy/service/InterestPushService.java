@@ -1,5 +1,6 @@
 package com.example.tdy.service;
 
+import com.example.tdy.dto.UerModelDTO;
 import com.example.tdy.entity.User;
 
 import java.util.Collection;
@@ -15,4 +16,6 @@ public interface InterestPushService {
     Collection<Integer> listByUserModel(User user);
 
     Collection<Integer> listByLabels(List<String> labels);
+
+    void updateUserModel(UerModelDTO userModelDto);
 }

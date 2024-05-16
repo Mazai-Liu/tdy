@@ -1,20 +1,26 @@
 package com.example.tdy.service.impl;
 
+import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.context.BaseContext;
+import com.example.tdy.dto.UerModelDTO;
 import com.example.tdy.entity.Subscribe;
 import com.example.tdy.entity.Type;
 import com.example.tdy.entity.User;
+import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.SubscribeMapper;
 import com.example.tdy.mapper.TypeMapper;
 import com.example.tdy.mapper.UserMapper;
+import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
 import com.example.tdy.service.FollowService;
 import com.example.tdy.service.UserService;
+import com.example.tdy.service.VideoService;
 import com.example.tdy.vo.UserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -52,6 +58,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Integer id) {
+        if(id == null || id == 0)
+            return null;
         List<Integer> ids = new ArrayList<>();
         ids.add(id);
         return userMapper.selectByUserIds(ids).get(0);
@@ -219,6 +227,8 @@ public class UserServiceImpl implements UserService {
 
         return noSubscribed.isEmpty() ? new ArrayList<Type>() :typeMapper.selectByIds(noSubscribed);
     }
+
+
 }
 
 

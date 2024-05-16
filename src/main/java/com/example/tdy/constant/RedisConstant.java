@@ -38,4 +38,8 @@ public class RedisConstant {
     public static final String USER_INBOX = "user:inbox:";
     public static final String HOT_VIDEO = "video:hot:";
     public static final String HOT_VIDEO_RANK = "video:hot:rank:";
+    /**
+     * 收件箱内容7天过期
+     */
+    public static final long INBOX_TIMEOUT = 7 * 24 * 60 * 60;
 }

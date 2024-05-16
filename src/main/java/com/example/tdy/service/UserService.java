@@ -1,5 +1,6 @@
 package com.example.tdy.service;
 
+import com.example.tdy.dto.UerModelDTO;
 import com.example.tdy.entity.Favorite;
 import com.example.tdy.entity.Subscribe;
 import com.example.tdy.entity.Type;
@@ -33,4 +34,5 @@ public interface UserService {
     List<Type> getSubscribe();
 
     List<Type> getNoSubscribe();
+
 }
