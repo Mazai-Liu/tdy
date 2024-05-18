@@ -77,12 +77,13 @@ public class InterestPushServiceImpl implements InterestPushService {
 
                 // 去重
                 String key2 = RedisConstant.HISTORY_VIDEO;
-                List<Object> simpIds = stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-                    for (Integer id : ids) {
-                        connection.get((key2 + id + ":" + userId).getBytes());
-                    }
-                    return null;
-                });
+                // 封装keys
+                Collection<String> keys = new ArrayList<>();
+                for (Integer id : ids) {
+                    keys.add((key2 + id + ":" + userId));
+                }
+
+                List<Object> simpIds = redisUtil.getValues(keys);
                 simpIds = simpIds.stream().filter(o->!ObjectUtils.isEmpty(o)).collect(Collectors.toList());;
                 if (!ObjectUtils.isEmpty(simpIds)){
                     for (Object simpId : simpIds) {
@@ -165,7 +166,7 @@ public class InterestPushServiceImpl implements InterestPushService {
     public Integer randomVideoId(Integer sex) {
         String key = RedisConstant.SYSTEM_STOCK + (sex == 1 ? "美女" : "宠物");
         final Object o = stringRedisTemplate.opsForSet().randomMember(key);
-        return Integer.parseInt(o.toString());
+        return o == null ? null : Integer.parseInt(o.toString());
     }
 
     private String[] getProbabilityArray(Map<Object, Object> entries) {
@@ -176,7 +177,8 @@ public class InterestPushServiceImpl implements InterestPushService {
         AtomicInteger num = new AtomicInteger();
         // 计算概率数
         entries.forEach((k, v) -> {
-            int p = (int) (((double) v + size) / size);
+            double value = Double.parseDouble((String) v);
+            int p = (int) ((value + size) / size);
             num.getAndAdd(p);
             probabilityMap.put(k.toString(), p);
         });

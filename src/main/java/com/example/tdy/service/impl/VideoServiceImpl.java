@@ -135,12 +135,6 @@ public class VideoServiceImpl implements VideoService {
             videoTask.setOldState(isAdd ? true : video.getOpen() == 1);
             videoTask.setNewState(true);
             videoPublishAuditService.audit(videoTask);
-
-            System.out.println(videoTask.getVideo().getAuditStatus());
-            System.out.println(videoTask.getVideo().getAuditMsg());
-
-            // 加入用户发件箱
-            // redisUtil.addOutbox(userId, video);//
         }
 
 

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,21 +19,24 @@ import org.springframework.stereotype.Service;
  * @time 2024/5/7
  */
 
-public abstract class AbstractAudit {
+@Component
+public abstract class AbstractAudit{
     public static Logger logger = LoggerFactory.getLogger(AbstractAudit.class);
 
     protected AbstractAudit next;
 
-    protected ContentType businessName = ContentType.DEFAULT;
+    protected ContentType businessName;
 
 
+    @Autowired
     public QiniuUtil qiniuUtil;
 
     public AbstractAudit(){}
 
-    public AbstractAudit(ContentType businessName, QiniuUtil qiniuUtil) {
+
+    public AbstractAudit setSelfBusinessName(ContentType businessName) {
         this.businessName = businessName;
-        this.qiniuUtil = qiniuUtil;
+        return this;
     }
 
     public void auditProcess(Video video) throws QiniuException {

@@ -1,5 +1,6 @@
 package com.example.tdy.utils;
 
+import com.example.tdy.entity.Video;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
@@ -62,4 +63,5 @@ public class QiniuUtil {
         Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
         return "Qiniu " + auth.signQiniuAuthorization(url, method, body == null ? null : body.getBytes(), contentType);
     }
+
 }

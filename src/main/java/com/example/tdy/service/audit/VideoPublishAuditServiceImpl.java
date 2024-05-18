@@ -8,13 +8,16 @@ import com.example.tdy.entity.audit.VideoAudit;
 import com.example.tdy.entity.task.VideoTask;
 import com.example.tdy.enums.ContentType;
 import com.example.tdy.mapper.VideoMapper;
+import com.example.tdy.service.FileService;
 import com.example.tdy.service.impl.VideoServiceImpl;
 import com.example.tdy.utils.QiniuUtil;
+import com.example.tdy.utils.RedisUtil;
 import com.qiniu.common.QiniuException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -40,7 +43,22 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
     private VideoMapper videoMapper;
 
     @Autowired
+    private VideoAudit videoAudit;
+
+    @Autowired
+    private TextAudit textAudit;
+
+    @Autowired
+    private ImageAudit imageAudit;
+
+    @Autowired
     private QiniuUtil qiniuUtil;
+
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
 
     @Override
@@ -61,8 +79,17 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
 
             logger.info("需要审核：" + needAudit);
             if(needAudit) {
+                // 填充url
+                fileService.setRealUrl(video);
+
                 try {
                     audit.auditProcess(video);
+
+                    if(video.getAuditStatus() == 1) {
+                        // 加入用户发件箱、系统视频库
+                        redisUtil.addOutbox(video.getUserId(), video);
+                        redisUtil.addSystemStock(video);
+                    }
                 } catch (QiniuException e) {
                     throw new RuntimeException(e);
                 }
@@ -79,10 +106,9 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
         executor  = new ThreadPoolExecutor(5, maximumPoolSize, 60, TimeUnit.SECONDS, new ArrayBlockingQueue(1000));
 
         AbstractAudit.Builder builder = new AbstractAudit.Builder();
-        audit = builder.add(new ImageAudit(ContentType.COVER, qiniuUtil)).
-                add(new TextAudit(ContentType.Title, qiniuUtil)).
-                add(new TextAudit(ContentType.Description, qiniuUtil)).
-                add(new VideoAudit(ContentType.Video, qiniuUtil)).
+        audit = builder.add(imageAudit.setSelfBusinessName(ContentType.COVER)).
+                add(textAudit.setSelfBusinessName(ContentType.Title)).
+                add(videoAudit.setSelfBusinessName(ContentType.Video)).
                 build();
     }
 }

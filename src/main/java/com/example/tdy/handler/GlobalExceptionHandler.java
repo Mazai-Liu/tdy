@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {BaseException.class})
-    public R globalException(Exception e) {
-        return R.error(e.getMessage());
-    }
+//    @ExceptionHandler(value = {BaseException.class})
+//    public R globalException(Exception e) {
+//        return R.error(e.getMessage());
+//    }
 }

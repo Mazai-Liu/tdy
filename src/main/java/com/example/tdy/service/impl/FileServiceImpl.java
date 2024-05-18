@@ -2,17 +2,17 @@ package com.example.tdy.service.impl;
 
 import com.example.tdy.constant.VideoConstant;
 import com.example.tdy.context.BaseContext;
-import com.example.tdy.context.LocalCache;
 import com.example.tdy.entity.File;
+import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.FileMapper;
 import com.example.tdy.service.FileService;
 import com.example.tdy.utils.QiniuUtil;
 import com.qiniu.storage.model.FileInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 /**
  * @author Mazai-Liu
@@ -21,6 +21,8 @@ import java.util.UUID;
 
 @Service
 public class FileServiceImpl implements FileService {
+    Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+
     @Autowired
     private QiniuUtil qiniuUtil;
 
@@ -55,7 +57,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Integer setDefaultCover(Integer url, Integer userId) {
+    public String setDefaultCover(Integer url, Integer userId) {
         // TODO
 
         return VideoConstant.DEFAULT_COVER;
@@ -73,6 +75,18 @@ public class FileServiceImpl implements FileService {
         file.setFileKey(fileKey);
 
         return file;
+    }
+
+    @Override
+    public void setRealUrl(Video video) {
+        try {
+            video.setUrl(getFileUrlById(Integer.valueOf(video.getUrl())).getFileKey());
+            video.setCover(getFileUrlById(Integer.valueOf(video.getCover())).getFileKey());
+            logger.info("video.url:{}", video.getUrl());
+            logger.info("video.cover:{}", video.getCover());
+        } catch (BaseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String generateFileKey(String key) {

@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -34,10 +35,12 @@ import java.util.Map;
  * @author Mazai-Liu
  * @time 2024/5/7
  */
+
+@Component
 public class VideoAudit extends AbstractAudit {
     public static Logger logger = LoggerFactory.getLogger(VideoAudit.class);
 
-    public static final String AUDIT_API_URL = "http://ai.qiniuapi.com/v3/video/censor/";
+    public static final String AUDIT_API_URL = "http://ai.qiniuapi.com/v3/video/censor";
     public static final String RESULT_API_URL = "http://ai.qiniuapi.com/v3/jobs/video/";
 
     public static final String body = "{\n" +
@@ -61,26 +64,21 @@ public class VideoAudit extends AbstractAudit {
         super();
     }
 
-    public VideoAudit(ContentType businessName, QiniuUtil qiniuUtil) {
-        super(businessName, qiniuUtil);
-    }
 
     @Override
     public AuditResult doAudit(Video video) throws QiniuException {
         logger.info("videoUrl: {}", video.getUrl());
-
-        return process(video.getUrl());
+        AuditResult auditResult = process(video.getUrl());
+        logger.info("auditResult: {}", auditResult);
+        return auditResult;
     }
 
     private AuditResult process(String videoUrl) throws QiniuException {
-        logger.info("进入视频审核process");
+        logger.info("进入视频审核process，视频url：{}", videoUrl);
         Client client = new Client();
 
-        String requestBody = body.replace("${url}", videoUrl);
-
-        String result = VideoCensor(client, requestBody);
-        // {"job":"664598e54802da5d32e37df4"}
-        System.out.println(result);
+        String result = VideoCensor(client, videoUrl);
+        logger.info("result:{}", result);
 
         // 获取job_id
         Gson gson = new Gson();
@@ -89,7 +87,7 @@ public class VideoAudit extends AbstractAudit {
         try {
             while (true) {
                 String videoCensorResult = getVideoCensorResultByJobID(client, jobID);
-                System.out.println(videoCensorResult);
+                // System.out.println(videoCensorResult);
 
                 final BodyJson bodyJson = gson.fromJson(videoCensorResult, BodyJson.class);
                 logger.info("bodyJson:{}", bodyJson);
@@ -106,6 +104,7 @@ public class VideoAudit extends AbstractAudit {
                 Thread.sleep(2000L);
             }
         } catch (InterruptedException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -117,12 +116,10 @@ public class VideoAudit extends AbstractAudit {
      */
     public AuditResult check(List<ScoreJson> auditRule, BodyJson bodyJson) {
         logger.info("进行score和suggestion check");
-        logger.info("bodyJson: {}", bodyJson);
         // TODO 暂且只根据七牛云的审核结果来判断
         ScenesJson scenes = bodyJson.getScenes();
         if(!scenes.getPulp().getSuggestion().equals("pass") ||
                 !scenes.getPolitician().getSuggestion().equals("pass") ||
-                !scenes.getAntispam().getSuggestion().equals("pass") ||
                 !scenes.getTerror().getSuggestion().equals("pass")) {
             return new AuditResult("失败", AuditStatus.FAIL);
         }
@@ -131,9 +128,9 @@ public class VideoAudit extends AbstractAudit {
         return new AuditResult("成功", AuditStatus.PASS);
     }
 
-    public String VideoCensor(Client client, String requestBody) throws QiniuException {
+    public String VideoCensor(Client client, String videoUrl) throws QiniuException {
 
-        // 构造post请求body
+//        // 构造post请求body
 //        Gson gson = new Gson();
 //
 //        Map bodyData = new HashMap();
@@ -144,7 +141,7 @@ public class VideoAudit extends AbstractAudit {
 //
 //        Map<String, Object> params = new HashMap();
 //
-//        Map<String, Object> scenes = new HashMap();
+////        Map<String, Object> scenes = new HashMap();
 //
 //        //pulp 黄  terror 恐  politician 敏感人物
 //        String[] types = {"pulp", "terror", "politician"};
@@ -158,6 +155,7 @@ public class VideoAudit extends AbstractAudit {
 //
 //        String paraR = gson.toJson(bodyData);
 
+        String requestBody = body.replace("${url}", videoUrl);
         byte[] bodyByte = requestBody.getBytes();
 
         return post(client, AUDIT_API_URL, bodyByte);

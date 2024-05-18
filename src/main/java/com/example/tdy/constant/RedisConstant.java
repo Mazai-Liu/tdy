@@ -42,4 +42,5 @@ public class RedisConstant {
      * 收件箱内容7天过期
      */
     public static final long INBOX_TIMEOUT = 7 * 24 * 60 * 60;
+    public static final long DEFAULT_TIMEOUT = 7 * 24 * 60 * 60;
 }

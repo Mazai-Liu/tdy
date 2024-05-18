@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,15 @@ public class RedisUtil {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    public List<Object> getValues(Collection<String> keys) {
+        return stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            for (String key : keys) {
+                connection.get(key.getBytes());
+            }
+            return null;
+        });
+    }
 
     public void addOutbox(Integer userId, Video video) {
         String key = RedisConstant.USER_OUTBOX + userId;
@@ -66,5 +76,18 @@ public class RedisUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void addSystemStock(Video video) {
+        List<String> labels = video.buildLabel();
+        String key = RedisConstant.SYSTEM_STOCK;
+        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            for (String label : labels) {
+                connection.zAdd((key + label).getBytes(), video.getCreateTime().toInstant(ZoneOffset.of("+8")).toEpochMilli(),
+                        String.valueOf(video.getId()).getBytes());
+                connection.expire((key + label).getBytes(), RedisConstant.DEFAULT_TIMEOUT);
+            }
+            return null;
+        });
     }
 }

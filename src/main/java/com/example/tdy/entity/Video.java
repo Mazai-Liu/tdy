@@ -22,7 +22,7 @@ public class Video {
     private String description;
     private String label;
     private String url;
-    private Integer cover;
+    private String cover;
     private String lv;
     private String duration;
 

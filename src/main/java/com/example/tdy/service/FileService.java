@@ -1,6 +1,7 @@
 package com.example.tdy.service;
 
 import com.example.tdy.entity.File;
+import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 
 /**
@@ -14,7 +15,9 @@ public interface FileService {
 
     Integer save(String fileKey);
 
-    Integer setDefaultCover(Integer url, Integer userId);
+    String setDefaultCover(Integer url, Integer userId);
 
     File getFileUrlById(Integer fileId) throws BaseException;
+
+    void setRealUrl(Video video);
 }
