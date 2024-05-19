@@ -41,3 +41,4 @@ build/
 *-dev.yml
 
 ### other ###
+src/test/**

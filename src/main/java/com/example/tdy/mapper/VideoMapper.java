@@ -24,4 +24,7 @@ public interface VideoMapper {
 
     @Select("select * from video where id = #{videoId}")
     Video selectById(Integer videoId);
+
+    @Select("select * from video")
+    List<Video> selectALl();
 }

@@ -50,7 +50,10 @@ public class InterestPushServiceImpl implements InterestPushService {
             String key = RedisConstant.USER_MODEL + userId;
             // 获取各标签的概率。key标签，value得分
             Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
-            if(!entries.isEmpty()) {
+
+            if(entries == null || entries.isEmpty()) {
+
+            } else {
                 // 获取到标签概率数组
                 String[] probability = getProbabilityArray(entries);
 
@@ -73,7 +76,9 @@ public class InterestPushServiceImpl implements InterestPushService {
                     return null;
                 });
                 // 获取videoIds
-                Set<Integer> ids = list.stream().filter(Objects::nonNull).map(id -> Integer.parseInt(id.toString())).collect(Collectors.toSet());
+                Set<Integer> ids = list.stream().filter(Objects::nonNull).
+                        map(id -> Integer.parseInt(id.toString())).
+                        collect(Collectors.toSet());
 
                 // 去重
                 String key2 = RedisConstant.HISTORY_VIDEO;
@@ -148,18 +153,18 @@ public class InterestPushServiceImpl implements InterestPushService {
         List<String> labels = video.buildLabel();
 
         String key = RedisConstant.USER_MODEL + currentId;
+
         // key为label，value为分数
         Map<Object, Object> modelMap = stringRedisTemplate.opsForHash().entries(key);
         Double score = userModelDto.getScore();
-        if(modelMap.isEmpty()) {
-            labels.forEach(label -> {
-                if(modelMap.containsKey(label)) {
-                    stringRedisTemplate.opsForHash().increment(key, label, score);
-                } else {
-                    stringRedisTemplate.opsForHash().put(key, label, score.toString());
-                }
-            });
-        }
+
+        labels.forEach(label -> {
+            if(modelMap.containsKey(label)) {
+                stringRedisTemplate.opsForHash().increment(key, label, score);
+            } else {
+                stringRedisTemplate.opsForHash().put(key, label, score.toString());
+            }
+        });
     }
 
 
@@ -178,6 +183,8 @@ public class InterestPushServiceImpl implements InterestPushService {
         // 计算概率数
         entries.forEach((k, v) -> {
             double value = Double.parseDouble((String) v);
+            if(value < 0)
+                value = 0f;
             int p = (int) ((value + size) / size);
             num.getAndAdd(p);
             probabilityMap.put(k.toString(), p);

@@ -43,12 +43,15 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
     private VideoMapper videoMapper;
 
     @Autowired
+   // @Lazy 会有问题
     private VideoAudit videoAudit;
 
     @Autowired
+   // @Lazy
     private TextAudit textAudit;
 
     @Autowired
+   // @Lazy
     private ImageAudit imageAudit;
 
     @Autowired

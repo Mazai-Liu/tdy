@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.tdy.mapper.VideoMapper">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        insert into video(title, url, lv, cover, user_id, description, open, type_id, browses, likes, shares,
+        insert into video(title, url, lv, cover, user_id, description, open, type_id, browses, label, likes, shares,
                           audit_status, comments, favorites, duration, create_time, update_time, audit_msg)
-        values(#{title}, #{url}, #{lv}, #{cover}, #{userId}, #{description}, #{open}, #{typeId}, #{browses},
+        values(#{title}, #{url}, #{lv}, #{cover}, #{userId}, #{description}, #{open}, #{typeId}, #{browses}, #{label},
                #{likes}, #{shares}, #{auditStatus}, #{comments}, #{favorites}, #{duration}, #{createTime}, #{updateTime}, #{auditMsg})
     </insert>
     <update id="update">

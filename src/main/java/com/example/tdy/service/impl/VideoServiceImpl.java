@@ -106,7 +106,12 @@ public class VideoServiceImpl implements VideoService {
         else {
             video.setUserId(userId);
             video.setAuditStatus(AuditStatus.ING.getCode());
-            video.setLabel(video.getLabel());
+            video.setComments(0);
+            video.setLikes(0);
+            video.setFavorites(0);
+            video.setShares(0);
+            video.setBrowses(0);
+
 
             // 如果没有封面，则设置默认
             if(ObjectUtils.isEmpty(video.getCover())) {
