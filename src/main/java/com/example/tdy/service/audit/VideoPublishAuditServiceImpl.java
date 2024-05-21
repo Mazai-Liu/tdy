@@ -83,7 +83,7 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
             logger.info("需要审核：" + needAudit);
             if(needAudit) {
                 // 填充url
-                fileService.setRealUrl(video);
+//                fileService.setRealUrl(video);
 
                 try {
                     audit.auditProcess(video);

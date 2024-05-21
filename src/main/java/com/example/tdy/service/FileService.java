@@ -17,7 +17,7 @@ public interface FileService {
 
     String setDefaultCover(Integer url, Integer userId);
 
-    File getFileUrlById(Integer fileId) throws BaseException;
+    File getFileById(Integer fileId) throws BaseException;
 
-    void setRealUrl(Video video);
+    String getRealUrl(Integer fileId);
 }

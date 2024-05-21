@@ -115,6 +115,12 @@
             <artifactId>joda-time</artifactId>
             <version>2.10.1</version>
         </dependency>
+        <!-- 对url进行解析获取时长 -->
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-all-deps</artifactId>
+            <version>2.5.1</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

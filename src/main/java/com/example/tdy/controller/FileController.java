@@ -65,7 +65,7 @@ public class FileController {
      */
     @GetMapping("/{fileId}")
     public void getFileUrl(@PathVariable Integer fileId, HttpServletResponse response) throws Exception {
-        File file = fileService.getFileUrlById(fileId);
+        File file = fileService.getFileById(fileId);
 
         response.setContentType(file.getType());
         response.sendRedirect(file.getFileKey());

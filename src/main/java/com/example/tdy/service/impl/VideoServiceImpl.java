@@ -106,11 +106,14 @@ public class VideoServiceImpl implements VideoService {
         else {
             video.setUserId(userId);
             video.setAuditStatus(AuditStatus.ING.getCode());
+            // 初始化内容，找机会简化
+            // TODO 和创建、修改时间一起，用自定义注解统一注入？
             video.setComments(0);
             video.setLikes(0);
             video.setFavorites(0);
             video.setShares(0);
             video.setBrowses(0);
+            video.setOpen(0);
 
 
             // 如果没有封面，则设置默认
@@ -123,7 +126,8 @@ public class VideoServiceImpl implements VideoService {
 
             // 填充视频时长
             // TODO
-            video.setDuration(FileUtil.getDuration(Integer.parseInt(video.getUrl())));
+            String realUrl = fileService.getFileById(Integer.parseInt(video.getUrl())).getFileKey();
+            video.setDuration(FileUtil.getDuration(realUrl));
 
             // 填充时间
             video.setCreateTime(LocalDateTime.now());
