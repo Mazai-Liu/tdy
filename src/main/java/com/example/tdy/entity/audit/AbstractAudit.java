@@ -4,6 +4,7 @@ package com.example.tdy.entity.audit;
 import com.example.tdy.entity.Video;
 import com.example.tdy.enums.AuditStatus;
 import com.example.tdy.enums.ContentType;
+import com.example.tdy.service.FileService;
 import com.example.tdy.service.audit.VideoPublishAuditServiceImpl;
 import com.example.tdy.utils.QiniuUtil;
 import com.qiniu.common.QiniuException;
@@ -30,6 +31,9 @@ public abstract class AbstractAudit{
 
     @Autowired
     public QiniuUtil qiniuUtil;
+
+    @Autowired
+    public FileService fileService;
 
     public AbstractAudit(){}
 

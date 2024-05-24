@@ -64,7 +64,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File getFileUrlById(Integer fileId) throws BaseException {
+    public File getFileById(Integer fileId) throws BaseException {
         File file = fileMapper.selectById(fileId);
         if(file == null) {
             throw new BaseException(VideoConstant.FILE_NOT_EXIST);
@@ -78,19 +78,18 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void setRealUrl(Video video) {
+    public String getRealUrl(Integer fileId) {
         try {
-            video.setUrl(getFileUrlById(Integer.valueOf(video.getUrl())).getFileKey());
-            video.setCover(getFileUrlById(Integer.valueOf(video.getCover())).getFileKey());
-            logger.info("video.url:{}", video.getUrl());
-            logger.info("video.cover:{}", video.getCover());
+            String realUrl = getFileById(fileId).getFileKey();
+            logger.info("real url:{}", realUrl);
+
+            return realUrl;
         } catch (BaseException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String generateFileKey(String key) {
-
+    public String generateFileKey(String key) {
         return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
         // 回源鉴权
 //        String uuid = UUID.randomUUID().toString();

@@ -35,13 +35,13 @@ public class Video {
     /**
      * 公开状态：公开1、私密0，默认私密
      */
-    private Integer open;
-    private Integer userId;
-    private Integer browses;
-    private Integer likes;
-    private Integer comments;
-    private Integer favorites;
-    private Integer shares;
+    private Integer open = 0;
+    private Integer userId = 0;
+    private Integer browses = 0;
+    private Integer likes = 0;
+    private Integer comments = 0;
+    private Integer favorites = 0;
+    private Integer shares = 0;
 
     /**
      * 审核状态：0审核中，1审核通过，2审核不通过
