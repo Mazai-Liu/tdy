@@ -18,4 +18,9 @@ public interface FavoriteService {
     void updateById(UpdateFavoriteDto updateFavoriteDto);
 
     void deleteByIds(List<Integer> ids);
+
+    boolean judgeFavoriteVideoState(Integer fid, Integer vid);
+    void addFavoriteVideo(Integer fid,Integer vid);
+
+    void cancelFavoriteVideo(Integer fid, Integer vid);
 }

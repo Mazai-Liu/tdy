@@ -69,15 +69,15 @@ class TdyApplicationTests {
 
         // 使用pipeline
         // 执行时长：498 毫秒?
-//        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-//            map.forEach((label, ids) -> {
-//                ids.forEach(id -> {
-//                    connection.sAdd((key + label).getBytes(), id.getBytes());
-//                });
-//            });
-//
-//            return null;
-//        });
+        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            map.forEach((label, ids) -> {
+                ids.forEach(id -> {
+                    connection.sAdd((key + label).getBytes(), id.getBytes());
+                });
+            });
+
+            return null;
+        });
 
 
         long end = System.currentTimeMillis();

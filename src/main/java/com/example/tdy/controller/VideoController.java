@@ -46,8 +46,11 @@ public class VideoController {
     }
     @PostMapping("/favorites/{fid}/{vid}")
     public R favorite(@PathVariable Integer fid, @PathVariable Integer vid) {
-        videoService.favorite(fid, vid);
-        return R.ok("已收藏");
+        Integer result = videoService.favorite(fid, vid);
+        if(result==1) {
+            return R.Ok("收藏成功");
+        }
+        return R.Ok("取消收藏");
     }
 
     @GetMapping("/favorite/{fid}")
@@ -79,4 +82,18 @@ public class VideoController {
         videoService.initFollowFeed(userId);
         return R.ok();
     }
+    @PostMapping("/star/{vid}")
+    public R like(@PathVariable Integer vid){
+        Integer uid = BaseContext.getCurrentId();
+        Integer star =  videoService.like(vid,uid);
+        if(star == 1) {
+            return R.ok("点赞成功");
+        }else
+            return R.ok("取消点赞");
+    }
+//    @PostMapping("/share/{vid}")
+//    public R share(@PathVariable Integer vid){
+//        Integer uid = BaseContext.getCurrentId();
+//        videoService.share(vid);
+//    }
 }

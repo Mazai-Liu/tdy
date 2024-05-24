@@ -3,14 +3,12 @@ package com.example.tdy.service.impl;
 import com.example.tdy.constant.ExceptionConstant;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.context.BaseContext;
-import com.example.tdy.entity.FavoriteVideo;
-import com.example.tdy.entity.HotVideo;
-import com.example.tdy.entity.User;
-import com.example.tdy.entity.Video;
+import com.example.tdy.entity.*;
 import com.example.tdy.entity.task.VideoTask;
 import com.example.tdy.enums.AuditStatus;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.FavoriteMapper;
+import com.example.tdy.mapper.LikeMapper;
 import com.example.tdy.mapper.UserMapper;
 import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.result.BasePage;
@@ -48,6 +46,8 @@ import java.util.stream.Collectors;
 public class VideoServiceImpl implements VideoService {
 
     public static Logger logger = LoggerFactory.getLogger(VideoServiceImpl.class);
+    @Autowired
+    private LikeMapper likeMapper;
 
     @Autowired
     private VideoMapper videoMapper;
@@ -63,7 +63,10 @@ public class VideoServiceImpl implements VideoService {
 
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private LikeService likeService;
+    @Autowired
+    private FavoriteService favoriteService;
     @Autowired
     private InterestPushService interestPushService;
 
@@ -213,18 +216,16 @@ public class VideoServiceImpl implements VideoService {
 
         return result;
     }
-
-    @Override
-    public void favorite(Integer fid, Integer vid) {
-        FavoriteVideo record = new FavoriteVideo();
-        record.setVideoId(vid);
-        record.setFavoriteId(fid);
-        record.setCreateTime(LocalDateTime.now());
-        record.setUpdateTime(LocalDateTime.now());
-
-        favoriteMapper.insertFavoriteVideo(record);
+    public Integer favorite(Integer fid, Integer vid) {
+        boolean judged = favoriteService.judgeFavoriteVideoState(fid, vid);
+        if(judged==false){
+            favoriteService.addFavoriteVideo(fid,vid);
+            return 1;//收藏
+        }else {
+            favoriteService.cancelFavoriteVideo(fid,vid);
+            return 0;//取消收藏
+        }
     }
-
     @Override
     public List<Video> getByFavoriteId(Integer fid) {
         List<Integer> videoIds = favoriteMapper.getFavoriteVideoByFavoriteId(fid).stream().
@@ -386,6 +387,26 @@ public class VideoServiceImpl implements VideoService {
     public void initFollowFeed(Integer userId) {
         List<Integer> followIds = followService.getFollows(userId, null);
         feedService.initFollowFeed(userId, followIds);
+    }
+
+    @Override
+    public Integer like(Integer vid, Integer uid) {
+        //判断是否点赞
+        boolean judged = likeService.judgeLikeState(uid,vid);
+        //实现点赞功能
+        //为true 说明没点赞
+        if (judged==true) {
+            likeService.addLike(uid,vid);
+            return 1;
+        }else {//已经点过了
+            likeService.cancelLike(uid,vid);
+            return 0;
+        }
+    }
+
+    @Override
+    public void share(Integer vid) {
+
     }
 
 }

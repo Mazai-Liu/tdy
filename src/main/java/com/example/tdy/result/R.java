@@ -22,11 +22,16 @@ public class R<T> {
     public static <T> R<T> ok(T data) {
         return new R<T>(0, "操作成功", data, true);
     }
+    public static <T> R<T> Ok(T data,String message) {
+        return new R<T>(0, message, data, true);
+    }
 
     public static R ok() {
         return new R<>(0, "操作成功", null, true);
     }
-
+    public static R Ok(String message){
+        return new R<>(0, message, null, true);
+    }
     public static R error(String msg) {
         return new R<>(201, msg, null, false);
     }
