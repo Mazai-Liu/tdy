@@ -397,7 +397,7 @@ public class VideoServiceImpl implements VideoService {
         boolean judged = likeService.judgeLikeState(uid,vid);
         //实现点赞功能
         //为true 说明没点赞
-        if (judged==true) {
+        if (judged == true) {
             likeService.addLike(uid,vid);
             return 1;
         }else {//已经点过了
