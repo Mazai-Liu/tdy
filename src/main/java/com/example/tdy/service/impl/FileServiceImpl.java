@@ -6,13 +6,19 @@ import com.example.tdy.entity.File;
 import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.FileMapper;
+import com.example.tdy.result.PageResult;
 import com.example.tdy.service.FileService;
 import com.example.tdy.utils.QiniuUtil;
+import com.github.pagehelper.Page;
 import com.qiniu.storage.model.FileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Mazai-Liu
@@ -89,6 +95,15 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @Override
+    public PageResult<Video> getSearchVideo(String searchName ,Integer page,Integer limit) {
+       PageResult<Video> pageResult = new PageResult<>();
+       List<Video> videoList = fileMapper.getSearchVideo(searchName,(page-1)*limit,limit);
+       pageResult.setRecords(videoList);
+       pageResult.setTotal(videoList.size());
+       return pageResult;
+    }
+
     public String generateFileKey(String key) {
         return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
         // 回源鉴权
@@ -96,4 +111,5 @@ public class FileServiceImpl implements FileService {
 //        LocalCache.set(uuid, true);
 //        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key + "?uuid=" + uuid;
     }
+
 }

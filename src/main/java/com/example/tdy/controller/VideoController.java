@@ -91,9 +91,5 @@ public class VideoController {
         }else
             return R.ok("取消点赞");
     }
-//    @PostMapping("/share/{vid}")
-//    public R share(@PathVariable Integer vid){
-//        Integer uid = BaseContext.getCurrentId();
-//        videoService.share(vid);
-//    }
+
 }

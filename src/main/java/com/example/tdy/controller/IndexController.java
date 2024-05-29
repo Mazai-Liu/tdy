@@ -10,12 +10,11 @@ import com.example.tdy.result.R;
 import com.example.tdy.service.TypeService;
 import com.example.tdy.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * @author Mazai-Liu
@@ -68,5 +67,15 @@ public class IndexController {
         Integer userId = BaseContext.getCurrentId();
         List<Video> videos = videoService.pushVideos(userId);
         return R.ok(videos);
+    }
+    @GetMapping("/search")
+    public R<PageResult<Video>> searchVideos( @RequestParam("searchName") String searchName,@RequestParam("page") Integer page,@RequestParam("limit") Integer limit){
+        PageResult<Video> videos = videoService.getSearchVideo(searchName,page,limit);
+        return R.ok(videos);
+    }
+    @GetMapping("/video/type/{typeId}")
+    public PageResult<Video> type(@PathVariable("typeId")Integer typeId,@RequestParam("page")Integer page,@RequestParam("limit")Integer limit){
+        PageResult<Video> pageResult =  videoService.getTypeVideo(typeId,page,limit);
+        return pageResult;
     }
 }

@@ -7,10 +7,7 @@ import com.example.tdy.entity.*;
 import com.example.tdy.entity.task.VideoTask;
 import com.example.tdy.enums.AuditStatus;
 import com.example.tdy.exception.BaseException;
-import com.example.tdy.mapper.FavoriteMapper;
-import com.example.tdy.mapper.LikeMapper;
-import com.example.tdy.mapper.UserMapper;
-import com.example.tdy.mapper.VideoMapper;
+import com.example.tdy.mapper.*;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
 import com.example.tdy.service.*;
@@ -48,7 +45,8 @@ public class VideoServiceImpl implements VideoService {
     public static Logger logger = LoggerFactory.getLogger(VideoServiceImpl.class);
     @Autowired
     private LikeMapper likeMapper;
-
+    @Autowired
+    private TypeMapper typeMapper;
     @Autowired
     private VideoMapper videoMapper;
 
@@ -411,6 +409,21 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public void share(Integer vid) {
 
+    }
+
+    @Override
+    public PageResult<Video> getSearchVideo(String searchName,Integer page,Integer limit) {
+        PageResult<Video> pageResult = fileService.getSearchVideo(searchName,page,limit);
+        return pageResult;
+    }
+
+    @Override
+    public PageResult<Video> getTypeVideo(Integer type ,Integer page,Integer limit) {
+        PageResult<Video> pageResult = new PageResult<>();
+        List<Video> videos = typeMapper.selectByTypeId(type,(page-1)*limit,limit);
+        pageResult.setRecords(videos);
+        pageResult.setTotal(videos.size());
+        return pageResult;
     }
 
 }
