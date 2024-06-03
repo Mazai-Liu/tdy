@@ -11,10 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mazai-Liu
@@ -89,5 +87,13 @@ public class RedisUtil {
             }
             return null;
         });
+    }
+
+    public void setExpire(String key, long timeout, TimeUnit timeUnit) {
+        stringRedisTemplate.expire(key, timeout, timeUnit);
+    }
+
+    public void setExpireAt(String key, Date date) {
+        stringRedisTemplate.expireAt(key, date);
     }
 }
