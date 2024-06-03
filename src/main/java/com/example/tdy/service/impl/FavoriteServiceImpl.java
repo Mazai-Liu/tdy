@@ -5,6 +5,7 @@ import com.example.tdy.dto.UpdateFavoriteDto;
 import com.example.tdy.entity.Favorite;
 import com.example.tdy.entity.FavoriteVideo;
 import com.example.tdy.mapper.FavoriteMapper;
+import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.service.FavoriteService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Autowired
     private FavoriteMapper favoriteMapper;
-
+    @Autowired
+    private VideoMapper videoMapper;
     @Override
     public List<Favorite> getFavoritesByUserId() {
         Integer currentId = BaseContext.getCurrentId();
@@ -65,6 +67,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         record.setCreateTime(LocalDateTime.now());
         record.setUpdateTime(LocalDateTime.now());
         favoriteMapper.insertFavoriteVideo(record);
+        videoMapper.updateVideoFavoritesById(fid,vid);
     }
 
     @Override

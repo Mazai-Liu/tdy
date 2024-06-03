@@ -19,6 +19,7 @@ public class RedisConstant {
     public static final String USER_FOLLOW = "user:follow:";
     public static final String USER_FANS = "user:fans:";
     public static final String VIDEO_HISTORY = "video:history:";
+    public static final String USER_HISTORY = "user:history:";
     public static final long BROWSE_HISTORY_TIMEOUT = 7;
     public static final TimeUnit BROWSE_HISTORY_TIMEOUT_UNIT = TimeUnit.DAYS;
     public static final long FOLLOW_FANS_TIMEOUT = 1;

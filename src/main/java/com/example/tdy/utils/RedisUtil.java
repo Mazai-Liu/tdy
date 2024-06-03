@@ -34,7 +34,22 @@ public class RedisUtil {
             return null;
         });
     }
-
+    public List<String> getValues(String keys){
+        List<String> list = new ArrayList<>();
+        Set<String> setMembers = stringRedisTemplate.opsForSet().members(keys);
+        for (String member : setMembers) {
+            list.add(member);
+        }
+        return list;
+    }
+    public boolean addUserHistory(Integer userId,String searchName){
+        String keys = RedisConstant.USER_HISTORY + userId;
+        Long add = stringRedisTemplate.opsForSet().add(keys, searchName);
+        if (add!=0)
+            return true;
+        else
+            return false;
+    }
     public void addOutbox(Integer userId, Video video) {
         String key = RedisConstant.USER_OUTBOX + userId;
         stringRedisTemplate.opsForZSet().add(key, String.valueOf(video.getId()),

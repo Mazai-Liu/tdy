@@ -49,8 +49,9 @@ public class VideoController {
         Integer result = videoService.favorite(fid, vid);
         if(result==1) {
             return R.Ok("收藏成功");
-        }
-        return R.Ok("取消收藏");
+        }else
+            return R.Ok("取消收藏");
+
     }
 
     @GetMapping("/favorite/{fid}")
@@ -87,9 +88,9 @@ public class VideoController {
         Integer uid = BaseContext.getCurrentId();
         Integer star =  videoService.like(vid,uid);
         if(star == 1) {
-            return R.ok("点赞成功");
+            return R.Ok("点赞成功");
         }else
-            return R.ok("取消点赞");
+            return R.Ok("取消点赞");
     }
 
 }

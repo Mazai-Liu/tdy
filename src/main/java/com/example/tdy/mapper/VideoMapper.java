@@ -4,6 +4,7 @@ import com.example.tdy.entity.Video;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -27,4 +28,8 @@ public interface VideoMapper {
 
     @Select("select * from video")
     List<Video> selectALl();
+    @Update("update video set favorites = favorites + 1 where type_id = #{fid} and id = #{vid}")
+    void updateVideoFavoritesById(@Param("fid") Integer fid,@Param("vid") Integer vid);
+    @Update("update video set likes = likes + 1 where user_id = #{uid} and id = #{vid}")
+    void updateVideoLikesById(@Param("uid") Integer uid, @Param("vid") Integer vid);
 }

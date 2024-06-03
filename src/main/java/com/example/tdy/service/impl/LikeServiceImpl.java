@@ -2,6 +2,7 @@ package com.example.tdy.service.impl;
 
 import com.example.tdy.entity.LikeVideo;
 import com.example.tdy.mapper.LikeMapper;
+import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import java.time.LocalDateTime;
 public class LikeServiceImpl implements LikeService {
     @Autowired
     private LikeMapper likeMapper;
+    @Autowired
+    private VideoMapper videoMapper;
     @Override
     public boolean judgeLikeState(Integer uid,Integer vid) {
         LikeVideo likeVideo = likeMapper.getLikeByUserId(uid,vid);
@@ -27,6 +30,7 @@ public class LikeServiceImpl implements LikeService {
         likeVideo.setCreateTime(LocalDateTime.now());
         likeVideo.setUpdateTime(LocalDateTime.now());
         likeMapper.insertIntoLike(likeVideo);
+        videoMapper.updateVideoLikesById(uid,vid);
     }
 
     @Override

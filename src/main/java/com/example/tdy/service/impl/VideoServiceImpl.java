@@ -192,6 +192,7 @@ public class VideoServiceImpl implements VideoService {
         // 获取当前用户的浏览记录
         Integer currentId = BaseContext.getCurrentId();
         String key = RedisConstant.VIDEO_HISTORY + currentId;
+
         Set<ZSetOperations.TypedTuple<String>> typedTuples = redisUtil.zSetGetByPage(key, basePage.getPage(), basePage.getLimit());
         if(typedTuples == null)
             return null;
@@ -413,6 +414,8 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public PageResult<Video> getSearchVideo(String searchName,Integer page,Integer limit) {
+        Integer userId = BaseContext.getCurrentId();
+        boolean judged = redisUtil.addUserHistory(userId, searchName);
         PageResult<Video> pageResult = fileService.getSearchVideo(searchName,page,limit);
         return pageResult;
     }
@@ -424,6 +427,13 @@ public class VideoServiceImpl implements VideoService {
         pageResult.setRecords(videos);
         pageResult.setTotal(videos.size());
         return pageResult;
+    }
+
+    @Override
+    public List<String> getHistoryNames(Integer userId) {
+        String keys = RedisConstant.USER_HISTORY + userId;
+        List<String> values = redisUtil.getValues(keys);
+        return values;
     }
 
 }
