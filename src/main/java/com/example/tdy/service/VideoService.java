@@ -51,4 +51,8 @@ public interface VideoService {
     Integer like(Integer vid, Integer uid);
 
     void share(Integer vid);
+
+    PageResult<Video> getSearchVideo(String searchName,Integer page,Integer limit);
+
+    PageResult<Video> getTypeVideo(Integer type,Integer page,Integer limit);
 }
