@@ -17,7 +17,7 @@ import java.util.List;
  * @time 2024/3/26
  */
 public interface UserService {
-    User getById();
+    UserVO getById();
 
     PageResult<User> getFollows(Integer userId, BasePage basePage);
 

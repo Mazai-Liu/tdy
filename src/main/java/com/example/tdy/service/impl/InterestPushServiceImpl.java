@@ -68,13 +68,9 @@ public class InterestPushServiceImpl implements InterestPushService {
                 }
 
                 // 通过pipeline加速获取视频ids
-                List<Object> list = stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-                    for (String labelName : labels) {
-                        String k = RedisConstant.SYSTEM_STOCK + labelName;
-                        connection.sRandMember(k.getBytes());
-                    }
-                    return null;
-                });
+
+                List<Object> list = redisUtil.sRandom(labels);
+
                 // 获取videoIds
                 Set<Integer> ids = list.stream().filter(Objects::nonNull).
                         map(id -> Integer.parseInt(id.toString())).

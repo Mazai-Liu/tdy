@@ -12,6 +12,7 @@ import com.example.tdy.result.R;
 import com.example.tdy.service.FavoriteService;
 import com.example.tdy.service.InterestPushService;
 import com.example.tdy.service.UserService;
+import com.example.tdy.vo.UserVO;
 import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +63,9 @@ public class UserController {
     }
 
     @GetMapping("/getInfo")
-    public R<User> getInfo() {
-        User user = userService.getById();
-        return R.ok(user);
+    public R<UserVO> getInfo() {
+        UserVO userVO = userService.getById();
+        return R.ok(userVO);
     }
 
     @GetMapping("/getInfo/{id}")

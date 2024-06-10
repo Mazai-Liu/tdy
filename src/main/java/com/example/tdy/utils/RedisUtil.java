@@ -1,6 +1,7 @@
 package com.example.tdy.utils;
 
 import com.example.tdy.constant.RedisConstant;
+import com.example.tdy.entity.Follow;
 import com.example.tdy.entity.Video;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;
@@ -95,5 +96,20 @@ public class RedisUtil {
 
     public void setExpireAt(String key, Date date) {
         stringRedisTemplate.expireAt(key, date);
+    }
+
+    public List<Object> getRandomByMap(HashMap<String, Integer> map) {
+        return stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            map.forEach((k, v) -> {
+                connection.sRandMember(k.getBytes(), v);
+            });
+            return null;
+        });
+    }
+
+    public void addZset(String key, List<Follow> follows) {
+        follows.forEach(follow ->
+                stringRedisTemplate.opsForZSet().add(key, follow.getUserId() + "", new Date().getTime())
+        );
     }
 }

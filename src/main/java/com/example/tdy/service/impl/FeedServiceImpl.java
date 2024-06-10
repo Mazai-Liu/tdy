@@ -36,9 +36,11 @@ public class FeedServiceImpl implements FeedService {
 
         Set<ZSetOperations.TypedTuple<String>> set = stringRedisTemplate.opsForZSet().rangeWithScores(key, -1, 1);
         if (!ObjectUtils.isEmpty(set)) {
+            // 收件箱有数据，则获取时间窗口内的新视频
             Double oldTime = set.iterator().next().getScore();
             init(userId,oldTime.longValue(),new Date().getTime(),followIds);
         } else {
+            // 收件箱无数据，则获取关注人发件箱七天内的视频
             init(userId,limit.getTime(), now.getTime(),followIds);
         }
     }

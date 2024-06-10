@@ -126,7 +126,6 @@ public class VideoServiceImpl implements VideoService {
             video.setLv(GenerateIdUtil.generateLvId());
 
             // 填充视频时长
-            // TODO
             String realUrl = fileService.getFileById(Integer.parseInt(video.getUrl())).getFileKey();
             video.setDuration(FileUtil.getDuration(realUrl));
 
@@ -136,7 +135,6 @@ public class VideoServiceImpl implements VideoService {
 
             videoMapper.insert(video);
 
-            // TODO 视频审核
             logger.info("开始视频审核");
             final VideoTask videoTask = new VideoTask();
             videoTask.setOldVideo(video);
@@ -182,7 +180,7 @@ public class VideoServiceImpl implements VideoService {
         String key = RedisConstant.VIDEO_HISTORY + currentId;
 
         stringRedisTemplate.opsForZSet().add(key, videoId + "", new Date().getTime());
-        stringRedisTemplate.expire(key, RedisConstant.BROWSE_HISTORY_TIMEOUT, RedisConstant.BROWSE_HISTORY_TIMEOUT_UNIT);
+        redisUtil.setExpire(key, RedisConstant.BROWSE_HISTORY_TIMEOUT, RedisConstant.BROWSE_HISTORY_TIMEOUT_UNIT);
     }
 
 
@@ -254,7 +252,6 @@ public class VideoServiceImpl implements VideoService {
         List<Video> videos = videoMapper.selectByIds(new ArrayList<>(videoIds));
 
         // 封装userVO
-        // TODO 可能还需要补充url
         videos.forEach(video -> {
             video.setUser(userService.getUserVoById(video.getUserId()));
         });
@@ -283,7 +280,6 @@ public class VideoServiceImpl implements VideoService {
             videos = videoMapper.selectByIds(new ArrayList<>(videoIds));
 
             // 封装userVO
-            // TODO 可能还需要补充url
             videos.forEach(v -> {
                 v.setUser(userService.getUserVoById(v.getUserId()));
             });
@@ -306,12 +302,8 @@ public class VideoServiceImpl implements VideoService {
         map.put(RedisConstant.HOT_VIDEO + (today - 2), 2);
 
         // redis执行获取返回值
-        final List<Object> hotVideoIds = stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            map.forEach((k, v) -> {
-                connection.sRandMember(k.getBytes(), v);
-            });
-            return null;
-        });
+        final List<Object> hotVideoIds = redisUtil.getRandomByMap(map);
+
         if (ObjectUtils.isEmpty(hotVideoIds)) {
             return new ArrayList<>();
         }
@@ -333,7 +325,6 @@ public class VideoServiceImpl implements VideoService {
         // 和浏览记录做交集? 不需要做交集，热门视频和兴趣推送不一样
 
         // 封装userVO
-        // TODO 可能还需要补充url
         videos.forEach(v -> {
             v.setUser(userService.getUserVoById(v.getUserId()));
         });
@@ -376,7 +367,7 @@ public class VideoServiceImpl implements VideoService {
 
         // TODO 顺序？
         List<Video> videos = videoMapper.selectByIds(ids);
-        // TODO 可能还需要补充url
+
         videos.forEach(video -> {
             video.setUser(userService.getUserVoById(video.getUserId()));
         });

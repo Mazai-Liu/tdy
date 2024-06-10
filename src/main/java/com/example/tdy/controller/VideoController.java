@@ -79,6 +79,8 @@ public class VideoController {
     @PostMapping("/init/follow/feed")
     public R initFollowFeed(){
         Integer userId = BaseContext.getCurrentId();
+        if(userId == null)
+            return R.ok();
         videoService.initFollowFeed(userId);
         return R.ok();
     }

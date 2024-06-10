@@ -7,6 +7,7 @@ import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.FollowMapper;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.service.FollowService;
+import com.example.tdy.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class FollowServiceImpl implements FollowService {
 
     @Autowired
     private FollowMapper followMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public List<Integer> getFollows(Integer userId, BasePage basePage) {
@@ -72,9 +76,8 @@ public class FollowServiceImpl implements FollowService {
             follows = followMapper.getByFollowId(followId);
             if(!ObjectUtils.isEmpty(follows)) {
                 result = follows.stream().map(Follow::getUserId).collect(Collectors.toList());
-                follows.forEach(follow ->
-                        stringRedisTemplate.opsForZSet().add(key, follow.getUserId() + "", new Date().getTime())
-                );
+                redisUtil.addZset(key, follows);
+
             }
         } else {
             result = data.stream().map(Integer::parseInt).collect(Collectors.toList());

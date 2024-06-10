@@ -49,11 +49,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getById() {
+    public UserVO getById() {
         Integer currentId = BaseContext.getCurrentId();
+        if(currentId == null)
+            return null;
+
         User user = getById(currentId);
-        user.setPassword("*******");
-        return user;
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+
+        return userVO;
     }
 
     @Override
