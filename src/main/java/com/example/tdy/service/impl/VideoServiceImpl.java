@@ -10,6 +10,7 @@ import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.*;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
+import com.example.tdy.result.R;
 import com.example.tdy.service.*;
 import com.example.tdy.service.audit.VideoPublishAuditServiceImpl;
 import com.example.tdy.utils.FileUtil;
@@ -412,6 +413,12 @@ public class VideoServiceImpl implements VideoService {
     public PageResult<Video> getTypeVideo(Integer type ,Integer page,Integer limit) {
         PageResult<Video> pageResult = new PageResult<>();
         List<Video> videos = typeMapper.selectByTypeId(type,(page-1)*limit,limit);
+
+        // 封装userVO
+        videos.forEach(v -> {
+            v.setUser(userService.getUserVoById(v.getUserId()));
+        });
+
         pageResult.setRecords(videos);
         pageResult.setTotal(videos.size());
         return pageResult;

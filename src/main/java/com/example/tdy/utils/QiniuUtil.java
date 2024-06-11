@@ -24,7 +24,8 @@ public class QiniuUtil {
     private String ACCESS_KEY;
     @Value("${qiniu.secret-key}")
     private String SECRET_KEY;
-    public static final String CNAME = "sev6jz7fu.hb-bkt.clouddn.com";
+    // public static final String CNAME = "cdn.badcoder.icu";
+    public static final String CNAME = "sevc2x3hi.sabkt.gdipper.com";
 
     public static final String PROTOCOL = "http";
 

@@ -2,6 +2,7 @@ package com.example.tdy.service.impl;
 
 import com.example.tdy.constant.VideoConstant;
 import com.example.tdy.context.BaseContext;
+import com.example.tdy.context.LocalCache;
 import com.example.tdy.entity.File;
 import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mazai-Liu
