@@ -1,5 +1,7 @@
 package com.example.tdy.service;
 
+import com.example.tdy.entity.Video;
+
 import java.util.List;
 
 /**
@@ -9,4 +11,6 @@ import java.util.List;
 public interface FeedService {
 
     void initFollowFeed(Integer userId, List<Integer> follows);
+
+    List<Integer> followFeed(Integer userId, Long lastTime);
 }

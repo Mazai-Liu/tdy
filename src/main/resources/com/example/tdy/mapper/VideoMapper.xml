@@ -75,10 +75,9 @@
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
-        Order by field(id,
-        <foreach collection="ids" item="id" separator=",">
+        ORDER BY FIELD(id,
+        <foreach collection="ids" item="id" separator="," close=")">
             #{id}
         </foreach>
-        )
     </select>
 </mapper>
