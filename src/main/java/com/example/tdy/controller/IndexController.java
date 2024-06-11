@@ -74,8 +74,8 @@ public class IndexController {
         return R.ok(videos);
     }
     @GetMapping("/video/type/{typeId}")
-    public PageResult<Video> type(@PathVariable("typeId")Integer typeId,@RequestParam("page")Integer page,@RequestParam("limit")Integer limit){
+    public R<PageResult<Video>> type(@PathVariable("typeId")Integer typeId,@RequestParam("page")Integer page,@RequestParam("limit")Integer limit){
         PageResult<Video> pageResult =  videoService.getTypeVideo(typeId,page,limit);
-        return pageResult;
+        return R.ok(pageResult);
     }
 }

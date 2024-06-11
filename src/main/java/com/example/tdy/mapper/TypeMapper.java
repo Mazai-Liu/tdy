@@ -21,6 +21,6 @@ public interface TypeMapper {
     List<Type> selectAll();
 
     List<Type> selectByIds(@Param("ids") List<Integer> ids);
-    @Select("select * from video where type_id = #{id} limit #{offset},#{limit}")
+    @Select("select * from video where type_id = #{id} limit #{offset}, #{limit}")
     List<Video> selectByTypeId(@Param("id") Integer id, @Param("offset") Integer offset,@Param("limit") Integer limit);
 }

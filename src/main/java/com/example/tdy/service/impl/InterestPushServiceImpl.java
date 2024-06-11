@@ -107,6 +107,8 @@ public class InterestPushServiceImpl implements InterestPushService {
         // 游客
         // 随机获取10个标签
         final List<String> labels = typeService.random10Labels();
+        System.out.println(labels);
+
         final ArrayList<String> labelNames = new ArrayList<>();
 
         int size = labels.size();
@@ -116,13 +118,14 @@ public class InterestPushServiceImpl implements InterestPushService {
             final int randomIndex = random.nextInt(size);
             labelNames.add(RedisConstant.SYSTEM_STOCK + labels.get(randomIndex));
         }
+        System.out.println("最后将要取：" + labelNames);
 
         // 获取videoId
         final List<Object> list = redisUtil.sRandom(labelNames);
         if (!ObjectUtils.isEmpty(list)){
             videoIds = list.stream().filter(id ->!ObjectUtils.isEmpty(id)).map(id -> Integer.valueOf(id.toString())).collect(Collectors.toSet());
         }
-
+        System.out.println(videoIds);
         return videoIds;
     }
 

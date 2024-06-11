@@ -8,6 +8,7 @@ import com.example.tdy.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -47,7 +48,8 @@ public class FileController {
      * @throws IOException
      */
     @PostMapping("/auth")
-    public void auth(@RequestParam(required = false) String uuid, HttpServletResponse response) throws IOException {
+    public void auth(@RequestParam(required = false) String uuid, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println(request.getRequestURI());
         if (uuid == null || LocalCache.containsKey(uuid)){
             response.sendError(401);
         }else {
