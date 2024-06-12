@@ -6,6 +6,7 @@ import com.example.tdy.entity.Follow;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.FollowMapper;
 import com.example.tdy.result.BasePage;
+import com.example.tdy.service.FeedService;
 import com.example.tdy.service.FollowService;
 import com.example.tdy.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class FollowServiceImpl implements FollowService {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private FeedService feedService;
 
     @Override
     public List<Integer> getFollows(Integer userId, BasePage basePage) {
@@ -100,13 +104,15 @@ public class FollowServiceImpl implements FollowService {
         // 删库
         followMapper.deleteByUserId(currentId, followId);
 
-        // 删缓存
         // 删关注
         String key = RedisConstant.USER_FOLLOW + currentId;
         stringRedisTemplate.opsForZSet().remove(key, followId);
         // 删粉丝
         key = RedisConstant.USER_FANS + followId;
         stringRedisTemplate.opsForZSet().remove(key, currentId);
+
+        // 删关注的人的视频
+        feedService.deleteFollowVideo(currentId, followId);
     }
 
     @Override

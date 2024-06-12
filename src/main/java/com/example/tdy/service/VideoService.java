@@ -43,6 +43,8 @@ public interface VideoService {
 
     List<Video> getHotVideo();
 
+    List<Video> getVideo(Integer userId);
+
     List<HotVideo> getHotVideoRank();
 
     List<Video> followFeed(Integer userId, Long lastTime);

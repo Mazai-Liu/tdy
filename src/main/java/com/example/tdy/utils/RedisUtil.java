@@ -40,6 +40,22 @@ public class RedisUtil {
                 video.getCreateTime().toInstant(ZoneOffset.of("+8")).toEpochMilli());
     }
 
+    public void addInbox(Integer userId, Video video) {
+        String key = RedisConstant.USER_INBOX + userId;
+        stringRedisTemplate.opsForZSet().add(key, String.valueOf(video.getId()),
+                video.getCreateTime().toInstant(ZoneOffset.of("+8")).toEpochMilli());
+    }
+
+    public void addInbox(List<Integer> userIds, Video video) {
+        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            for (Integer userId : userIds) {
+                connection.zAdd((RedisConstant.USER_INBOX + userId).getBytes(), video.getCreateTime().toInstant(ZoneOffset.of("+8")).toEpochMilli()
+                        , String.valueOf(video.getId()).getBytes());
+            }
+            return null;
+        });
+    }
+
     public List<Object> sRandom(List<String> keys){
         final List<Object> list = stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
             for (String key : keys) {

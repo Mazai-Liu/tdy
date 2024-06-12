@@ -49,18 +49,8 @@ public class PullStrategy implements FeedStrategy {
     }
 
     @Override
-    public List<Integer> followFeed(Integer userId, Long lastTime) {
-        String key = RedisConstant.USER_INBOX + userId;
-        Set<String> videoIds = stringRedisTemplate.opsForZSet().reverseRangeByScore(key,
-                0, lastTime == null ? new Date().getTime() : lastTime, lastTime == null ? 0 : 1, 5);
-        if(ObjectUtils.isEmpty(videoIds)) {
-            // 可能只是缓存中没有了,缓存只存储7天内的关注视频,继续往后查看关注的用户太少了,不做考虑 - feed流必然会产生的问题
-            return new ArrayList<>();
-        }
-
-        List<Integer> ids = videoIds.stream().map(Integer::parseInt).collect(Collectors.toList());
-
-        return ids;
+    public void onVideoPublish(Video video) {
+        return;
     }
 
     public void init(Integer userId, Long min, Long max, List<Integer> followIds) {
@@ -89,7 +79,7 @@ public class PullStrategy implements FeedStrategy {
                     for (RedisZSetCommands.Tuple tuple : tuples) {
                         final Object value = tuple.getValue();
                         // 放入返回集合
-                        ids.add(Integer.valueOf(value.toString()));
+//                        ids.add(Integer.valueOf(value.toString()));
 
                         final byte[] key = (t2 + userId).getBytes();
                         try {

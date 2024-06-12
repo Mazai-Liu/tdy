@@ -12,5 +12,6 @@ public interface FeedStrategy {
 
     void initFollowFeed(Integer userId, List<Integer> followIds);
 
-    List<Integer> followFeed(Integer userId, Long lastTime);
+    void onVideoPublish(Video video);
+
 }

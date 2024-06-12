@@ -115,7 +115,7 @@ public class VideoServiceImpl implements VideoService {
             video.setFavorites(0);
             video.setShares(0);
             video.setBrowses(0);
-            video.setOpen(0);
+            video.setOpen(1);
 
 
             // 如果没有封面，则设置默认
@@ -312,6 +312,11 @@ public class VideoServiceImpl implements VideoService {
 
         return getVideoByIds(videoIds);
 
+    }
+
+    @Override
+    public List<Video> getVideo(Integer userId) {
+        return videoMapper.selectByUserId(userId);
     }
 
     @Override
