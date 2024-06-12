@@ -115,7 +115,7 @@ public class VideoServiceImpl implements VideoService {
             video.setFavorites(0);
             video.setShares(0);
             video.setBrowses(0);
-            video.setOpen(0);
+            video.setOpen(1);
 
 
             // 如果没有封面，则设置默认
@@ -233,7 +233,7 @@ public class VideoServiceImpl implements VideoService {
                 map(FavoriteVideo::getVideoId).
                 collect(Collectors.toList());
 
-        return videoMapper.selectByIds(videoIds);
+        return getVideoByIds(videoIds);
     }
 
     @Override
@@ -249,15 +249,7 @@ public class VideoServiceImpl implements VideoService {
         if(ObjectUtils.isEmpty(videoIds))
             return new ArrayList<>();
 
-        // 获取视频
-        List<Video> videos = videoMapper.selectByIds(new ArrayList<>(videoIds));
-
-        // 封装userVO
-        videos.forEach(video -> {
-            video.setUser(userService.getUserVoById(video.getUserId()));
-        });
-
-        return videos;
+        return getVideoByIds(new ArrayList<>(videoIds));
     }
 
     @Override
@@ -278,12 +270,7 @@ public class VideoServiceImpl implements VideoService {
         // 获取视频
         List<Video> videos = null;
         if(!videoIds.isEmpty()) {
-            videos = videoMapper.selectByIds(new ArrayList<>(videoIds));
-
-            // 封装userVO
-            videos.forEach(v -> {
-                v.setUser(userService.getUserVoById(v.getUserId()));
-            });
+            videos = getVideoByIds(new ArrayList<>(videoIds));
 
         }
 
@@ -321,17 +308,15 @@ public class VideoServiceImpl implements VideoService {
             return new ArrayList<>();
         }
 
-
-        final List<Video> videos = videoMapper.selectByIds(videoIds);
         // 和浏览记录做交集? 不需要做交集，热门视频和兴趣推送不一样
 
-        // 封装userVO
-        videos.forEach(v -> {
-            v.setUser(userService.getUserVoById(v.getUserId()));
-        });
+        return getVideoByIds(videoIds);
 
-        return videos;
+    }
 
+    @Override
+    public List<Video> getVideo(Integer userId) {
+        return videoMapper.selectByUserId(userId);
     }
 
     @Override
@@ -356,25 +341,9 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public List<Video> followFeed(Integer userId, Long lastTime) {
-        String key = RedisConstant.USER_INBOX + userId;
-        Set<String> videoIds = stringRedisTemplate.opsForZSet().reverseRangeByScore(key,
-                0, lastTime == null ? new Date().getTime() : lastTime, lastTime == null ? 0 : 1, 5);
-        if(ObjectUtils.isEmpty(videoIds)) {
-            // 可能只是缓存中没有了,缓存只存储7天内的关注视频,继续往后查看关注的用户太少了,不做考虑 - feed流必然会产生的问题
-            return new ArrayList<>();
-        }
+        List<Integer> videoIds = feedService.followFeed(userId, lastTime);
 
-        List<Integer> ids = videoIds.stream().map(Integer::parseInt).collect(Collectors.toList());
-
-        // TODO 顺序？
-        List<Video> videos = videoMapper.selectByIds(ids);
-
-        videos.forEach(video -> {
-            video.setUser(userService.getUserVoById(video.getUserId()));
-        });
-
-
-        return videos;
+        return getVideoByIds(videoIds);
     }
 
     @Override
@@ -424,4 +393,17 @@ public class VideoServiceImpl implements VideoService {
         return pageResult;
     }
 
+    private List<Video> getVideoByIds(List<Integer> videoIds) {
+        if(videoIds == null || videoIds.isEmpty())
+            return new ArrayList<>();
+
+        // TODO 顺序？
+        List<Video> videos = videoMapper.selectByIds(videoIds);
+
+        videos.forEach(video -> {
+            video.setUser(userService.getUserVoById(video.getUserId()));
+        });
+
+        return videos;
+    }
 }

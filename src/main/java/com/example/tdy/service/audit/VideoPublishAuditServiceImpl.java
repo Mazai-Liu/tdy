@@ -10,6 +10,7 @@ import com.example.tdy.enums.ContentType;
 import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.service.FileService;
 import com.example.tdy.service.impl.VideoServiceImpl;
+import com.example.tdy.service.strategy.FeedStrategy;
 import com.example.tdy.utils.QiniuUtil;
 import com.example.tdy.utils.RedisUtil;
 import com.qiniu.common.QiniuException;
@@ -61,6 +62,9 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
     private FileService fileService;
 
     @Autowired
+    private FeedStrategy feedStrategy;
+
+    @Autowired
     private RedisUtil redisUtil;
 
 
@@ -82,16 +86,11 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
 
             logger.info("需要审核：" + needAudit);
             if(needAudit) {
-                // 填充url
-//                fileService.setRealUrl(video);
-
                 try {
                     audit.auditProcess(video);
 
                     if(video.getAuditStatus() == 1) {
-                        // 加入用户发件箱、系统视频库
-                        redisUtil.addOutbox(video.getUserId(), video);
-                        redisUtil.addSystemStock(video);
+                        onVideoAuditPass(video);
                     }
                 } catch (QiniuException e) {
                     throw new RuntimeException(e);
@@ -102,6 +101,14 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
         });
 
         return null;
+    }
+
+    public void onVideoAuditPass(Video video) {
+        // 加入用户发件箱、系统视频库
+        redisUtil.addOutbox(video.getUserId(), video);
+        redisUtil.addSystemStock(video);
+
+        feedStrategy.onVideoPublish(video);
     }
 
     @Override
