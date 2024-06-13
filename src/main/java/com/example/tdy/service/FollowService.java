@@ -1,6 +1,5 @@
 package com.example.tdy.service;
 
-import com.example.tdy.entity.User;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.BasePage;
 
