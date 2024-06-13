@@ -3,8 +3,10 @@ package com.example.tdy.service.impl;
 import com.example.tdy.constant.ExceptionConstant;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.entity.Follow;
+import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.mapper.FollowMapper;
+import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.service.FeedService;
 import com.example.tdy.service.FollowService;
@@ -38,7 +40,9 @@ public class FollowServiceImpl implements FollowService {
     private RedisUtil redisUtil;
 
     @Autowired
-    private FeedService feedService;
+
+    private VideoMapper videoMapper;
+
 
     @Override
     public List<Integer> getFollows(Integer userId, BasePage basePage) {
@@ -112,7 +116,15 @@ public class FollowServiceImpl implements FollowService {
         stringRedisTemplate.opsForZSet().remove(key, currentId);
 
         // 删关注的人的视频
-        feedService.deleteFollowVideo(currentId, followId);
+
+        deleteFollowVideo(currentId, followId);
+    }
+
+    public void deleteFollowVideo(Integer userId, Integer followId) {
+        List<Integer> videoIds = videoMapper.selectByUserId(followId).stream().map(Video::getId).collect(Collectors.toList());
+        stringRedisTemplate.opsForZSet().remove(RedisConstant.USER_INBOX + userId, videoIds.toArray());
+
+
     }
 
     @Override

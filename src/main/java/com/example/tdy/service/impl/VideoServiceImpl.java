@@ -296,13 +296,11 @@ public class VideoServiceImpl implements VideoService {
             return new ArrayList<>();
         }
 
-
         final ArrayList<Integer> videoIds = new ArrayList<>();
         // 会返回结果有null，做下校验
-        for (Object videoId : hotVideoIds) {
-            if (!ObjectUtils.isEmpty(videoId)) {
-                videoIds.add((Integer) videoId);
-            }
+        for (Object o : hotVideoIds) {
+            ArrayList<Integer> dayVideoIds = (ArrayList<Integer>) o;
+            videoIds.addAll(dayVideoIds);
         }
         if (ObjectUtils.isEmpty(videoIds)){
             return new ArrayList<>();
@@ -392,6 +390,13 @@ public class VideoServiceImpl implements VideoService {
         pageResult.setTotal(videos.size());
         return pageResult;
     }
+
+    @Override
+    public List<Video> getAllOkVideo() {
+
+        return videoMapper.selectALl();
+    }
+
 
     private List<Video> getVideoByIds(List<Integer> videoIds) {
         if(videoIds == null || videoIds.isEmpty())

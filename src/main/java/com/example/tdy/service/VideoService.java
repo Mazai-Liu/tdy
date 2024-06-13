@@ -58,4 +58,6 @@ public interface VideoService {
     PageResult<Video> getSearchVideo(String searchName, Integer page, Integer limit);
 
     PageResult<Video> getTypeVideo(Integer type,Integer page,Integer limit);
+
+    List<Video> getAllOkVideo();
 }

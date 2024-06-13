@@ -3,9 +3,11 @@ package com.example.tdy.service.impl;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.entity.Video;
 import com.example.tdy.service.FeedService;
+
 import com.example.tdy.service.VideoService;
 import com.example.tdy.service.strategy.FeedStrategy;
 import com.example.tdy.utils.DateUtil;
+import com.example.tdy.utils.RedisUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,24 +35,21 @@ public class FeedServiceImpl implements FeedService {
     private FeedStrategy feedStrategy;
 
     @Autowired
-    private VideoService videoService;
+
+    private FollowService followService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public void initFollowFeed(Integer userId, List<Integer> followIds) {
-        System.out.println("init:" + feedStrategy.getClass());
         feedStrategy.initFollowFeed(userId, followIds);
     }
 
     @Override
     public List<Integer> followFeed(Integer userId, Long lastTime) {
-        System.out.println("get ids:" + feedStrategy.getClass());
         return getFollowFeed(userId, lastTime);
-    }
 
-    @Override
-    public void deleteFollowVideo(Integer userId, Integer followId) {
-        List<Integer> videoIds = videoService.getVideo(followId).stream().map(Video::getId).collect(Collectors.toList());
-        stringRedisTemplate.opsForZSet().remove(RedisConstant.USER_INBOX + userId, videoIds.toArray());
     }
 
     private List<Integer> getFollowFeed(Integer userId, Long lastTime) {
