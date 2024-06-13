@@ -397,6 +397,7 @@ public class VideoServiceImpl implements VideoService {
         return videoMapper.selectALl();
     }
 
+
     private List<Video> getVideoByIds(List<Integer> videoIds) {
         if(videoIds == null || videoIds.isEmpty())
             return new ArrayList<>();

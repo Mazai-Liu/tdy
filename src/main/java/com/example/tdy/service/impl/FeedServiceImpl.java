@@ -3,7 +3,7 @@ package com.example.tdy.service.impl;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.entity.Video;
 import com.example.tdy.service.FeedService;
-import com.example.tdy.service.FollowService;
+
 import com.example.tdy.service.VideoService;
 import com.example.tdy.service.strategy.FeedStrategy;
 import com.example.tdy.utils.DateUtil;
@@ -35,6 +35,7 @@ public class FeedServiceImpl implements FeedService {
     private FeedStrategy feedStrategy;
 
     @Autowired
+
     private FollowService followService;
 
     @Autowired
@@ -48,6 +49,7 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public List<Integer> followFeed(Integer userId, Long lastTime) {
         return getFollowFeed(userId, lastTime);
+
     }
 
     private List<Integer> getFollowFeed(Integer userId, Long lastTime) {
