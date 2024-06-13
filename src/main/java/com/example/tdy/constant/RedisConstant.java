@@ -16,6 +16,7 @@ public class RedisConstant {
     public static final long TOKEN_TIMEOUT = 7;
     public static final TimeUnit TOKEN_TIMEOUT_UNIT = TimeUnit.DAYS;
 
+
     public static final String USER_FOLLOW = "user:follow:";
     public static final String USER_FANS = "user:fans:";
     public static final String VIDEO_HISTORY = "video:history:";
@@ -27,17 +28,27 @@ public class RedisConstant {
 
     public static final String USER_MODEL = "user:model:";
     public static final String SYSTEM_STOCK = "system:stock:";
+
+
     /**
      * 某视频已推送过用户 history:video:videoId   userId
      */
     public static final String HISTORY_VIDEO = "history:video:";
+
+
     public static final String USER_OUTBOX = "user:outbox:";
     public static final String USER_INBOX = "user:inbox:";
-    public static final String HOT_VIDEO = "video:hot:";
-    public static final String HOT_VIDEO_RANK = "video:hot:rank:";
     /**
      * 收件箱内容7天过期
      */
     public static final long INBOX_TIMEOUT = 7 * 24 * 60 * 60;
     public static final long DEFAULT_TIMEOUT = 7 * 24 * 60 * 60;
+
+    public static final String HOT_VIDEO = "video:hot:";
+    public static final Integer HOT_VIDEO_TIMEOUT = 3;
+    public static final TimeUnit HOT_VIDEO_TIMEOUT_UNIT = TimeUnit.DAYS;
+
+
+    public static final String HOT_VIDEO_RANK = "video:hot:rank:";
+
 }

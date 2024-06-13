@@ -14,5 +14,4 @@ public interface FeedService {
 
     List<Integer> followFeed(Integer userId, Long lastTime);
 
-    void deleteFollowVideo(Integer currentId, Integer followId);
 }

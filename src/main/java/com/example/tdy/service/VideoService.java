@@ -5,7 +5,6 @@ import com.example.tdy.entity.Video;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.BasePage;
 import com.example.tdy.result.PageResult;
-import com.example.tdy.result.R;
 
 import java.util.List;
 import java.util.Map;
@@ -58,4 +57,6 @@ public interface VideoService {
     PageResult<Video> getSearchVideo(String searchName, Integer page, Integer limit);
 
     PageResult<Video> getTypeVideo(Integer type,Integer page,Integer limit);
+
+    List<Video> getAllOkVideo();
 }

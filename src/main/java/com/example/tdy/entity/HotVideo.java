@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -17,16 +18,16 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @ToString
-public class HotVideo {
+public class HotVideo implements Serializable {
     String hotFormat;
 
     Double hot;
 
-    Long videoId;
+    Integer videoId;
 
     String title;
 
-    public HotVideo(Double hot,Long videoId,String title){
+    public HotVideo(Double hot,Integer videoId,String title){
         this.hot = hot;
         this.videoId = videoId;
         this.title = title;
