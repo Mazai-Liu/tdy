@@ -31,6 +31,7 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public List<Integer> followFeed(Integer userId, Long lastTime) {
         return getFollowFeed(userId, lastTime);
+
     }
 
     private List<Integer> getFollowFeed(Integer userId, Long lastTime) {

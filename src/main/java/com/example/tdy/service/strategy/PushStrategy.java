@@ -22,8 +22,7 @@ public class PushStrategy implements FeedStrategy {
 
     @Autowired
     private RedisUtil redisUtil;
-
-
+  
     @Override
     public void initFollowFeed(Integer userId, List<Integer> followIds) {
         // 推模式不用初始化

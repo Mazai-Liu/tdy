@@ -13,5 +13,4 @@ public interface FeedService {
     void initFollowFeed(Integer userId, List<Integer> follows);
 
     List<Integer> followFeed(Integer userId, Long lastTime);
-
 }
