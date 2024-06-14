@@ -1,6 +1,8 @@
 package com.example.tdy.schedule;
 
+
 import com.alibaba.fastjson.JSON;
+
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.entity.HotVideo;
 import com.example.tdy.entity.Video;
@@ -119,7 +121,9 @@ public class HotVideoSchedule {
 
             double hot = halfLife(like * WEIGHT_LIKE + comment * WEIGHT_COMMENT + share * WEIGHT_SHARE
                     + favorite * WEIGHT_FAVORITE + browse * WEIGHT_BROWSE, t);
+
             System.out.println(hot);
+
             topK.add(new HotVideo(hot, video.getId(), video.getTitle()));
         });
 
@@ -133,7 +137,9 @@ public class HotVideoSchedule {
                 try {
                     hotVideo.setHot(null);
                     // 不这样写铁报错！序列化问题
+
                     connection.zAdd(key, hot, JSON.toJSONString(hotVideo).getBytes());
+
 
                 } catch (Exception e) {
                     e.printStackTrace();

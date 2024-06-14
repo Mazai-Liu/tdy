@@ -62,4 +62,5 @@ public interface VideoService {
     List<Video> getAllOkVideo();
 
     Video getVideoById(Integer videoId);
+
 }
