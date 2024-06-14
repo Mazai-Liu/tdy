@@ -13,6 +13,7 @@ import com.example.tdy.service.impl.VideoServiceImpl;
 import com.example.tdy.service.strategy.FeedStrategy;
 import com.example.tdy.utils.QiniuUtil;
 import com.example.tdy.utils.RedisUtil;
+import com.example.tdy.utils.ThreadPoolUtil;
 import com.qiniu.common.QiniuException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +35,8 @@ import java.util.concurrent.TimeUnit;
 public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, VideoTask>, InitializingBean{
     public static Logger logger = LoggerFactory.getLogger(VideoPublishAuditServiceImpl.class);
 
-    private final int maximumPoolSize = 8;
-
-    protected ThreadPoolExecutor executor;
+    @Autowired
+    protected ThreadPoolUtil threadPoolUtil;
 
     private AbstractAudit audit;
 
@@ -56,12 +56,6 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
     private ImageAudit imageAudit;
 
     @Autowired
-    private QiniuUtil qiniuUtil;
-
-    @Autowired
-    private FileService fileService;
-
-    @Autowired
     private FeedStrategy feedStrategy;
 
     @Autowired
@@ -70,7 +64,8 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
 
     @Override
     public VideoTask audit(VideoTask videoTask) {
-        executor.submit(() -> {
+
+        threadPoolUtil.submit(() -> {
             Video video = videoTask.getVideo();
 
             // 判断是否需要审核，这里大部分情况下要审核
@@ -113,8 +108,6 @@ public class VideoPublishAuditServiceImpl implements AuditService<VideoTask, Vid
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        executor  = new ThreadPoolExecutor(5, maximumPoolSize, 60, TimeUnit.SECONDS, new ArrayBlockingQueue(1000));
-
         AbstractAudit.Builder builder = new AbstractAudit.Builder();
         audit = builder.add(imageAudit.setSelfBusinessName(ContentType.COVER)).
                 add(textAudit.setSelfBusinessName(ContentType.Title)).
