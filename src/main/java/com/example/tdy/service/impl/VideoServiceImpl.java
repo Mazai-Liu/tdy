@@ -1,5 +1,6 @@
 package com.example.tdy.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.example.tdy.constant.ExceptionConstant;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.context.BaseContext;
@@ -326,11 +327,11 @@ public class VideoServiceImpl implements VideoService {
         for (ZSetOperations.TypedTuple<String> objectTypedTuple : zSet) {
             final HotVideo hotVideo;
             try {
-                hotVideo = objectMapper.readValue(objectTypedTuple.getValue().toString(), HotVideo.class);
+                hotVideo = JSON.parseObject(objectTypedTuple.getValue(), HotVideo.class);
                 hotVideo.setHot((double) objectTypedTuple.getScore().intValue());
                 hotVideo.hotFormat();
                 hotVideos.add(hotVideo);
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -395,6 +396,13 @@ public class VideoServiceImpl implements VideoService {
     public List<Video> getAllOkVideo() {
 
         return videoMapper.selectALl();
+    }
+
+    @Override
+    public Video getVideoById(Integer videoId) {
+        Video video = videoMapper.selectById(videoId);
+        video.setUser(userService.getUserVoById(video.getUserId()));
+        return video;
     }
 
 
