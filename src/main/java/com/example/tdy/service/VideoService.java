@@ -60,4 +60,7 @@ public interface VideoService {
     PageResult<Video> getTypeVideo(Integer type,Integer page,Integer limit);
 
     List<Video> getAllOkVideo();
+
+    Video getVideoById(Integer videoId);
+
 }

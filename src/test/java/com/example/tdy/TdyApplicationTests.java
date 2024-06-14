@@ -1,29 +1,22 @@
 package com.example.tdy;
 
+import com.alibaba.fastjson.JSON;
 import com.example.tdy.constant.RedisConstant;
-import com.example.tdy.constant.SystemConstant;
-import com.example.tdy.entity.User;
+import com.example.tdy.entity.HotVideo;
 import com.example.tdy.entity.Video;
-import com.example.tdy.entity.audit.VideoAudit;
-import com.example.tdy.entity.resp.audit.BodyJson;
-import com.example.tdy.mapper.UserMapper;
 import com.example.tdy.mapper.VideoMapper;
-import com.example.tdy.utils.QiniuUtil;
-import com.google.gson.Gson;
-import com.qiniu.http.Client;
-import com.qiniu.storage.model.FileInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @SpringBootTest
 class TdyApplicationTests {
@@ -33,6 +26,13 @@ class TdyApplicationTests {
 
     @Autowired
     VideoMapper videoMapper;
+
+    Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+//    ObjectMapper om = new ObjectMapper();
+//
+//    {
+//        jackson2JsonRedisSerializer.setObjectMapper(om);
+//    }
 
     @Test
     void contextLoads() {
@@ -85,4 +85,26 @@ class TdyApplicationTests {
         System.out.printf("执行时长：%d 毫秒.", (end - start));
     }
 
+    @Test
+    void serializeTest() throws JsonProcessingException {
+        HotVideo hotVideo = new HotVideo(12d, 1, "test");
+
+        stringRedisTemplate.opsForZSet().add("test:", JSON.toJSONString(hotVideo)
+                , hotVideo.getHot());
+
+        final Set<ZSetOperations.TypedTuple<String>> zSet = stringRedisTemplate.opsForZSet().
+                reverseRangeWithScores("test:", 0, -1);
+
+        for (ZSetOperations.TypedTuple<String> objectTypedTuple : zSet) {
+            final HotVideo hv;
+            try {
+                String value = objectTypedTuple.getValue();
+                System.out.println(value);
+                hv = JSON.parseObject(value, HotVideo.class);
+                System.out.println(hv);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

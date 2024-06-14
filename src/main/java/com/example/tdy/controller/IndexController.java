@@ -78,4 +78,10 @@ public class IndexController {
         PageResult<Video> pageResult =  videoService.getTypeVideo(typeId,page,limit);
         return R.ok(pageResult);
     }
+
+    @GetMapping("/video/{videoId}")
+    public R<Video> type(@PathVariable("videoId")Integer videoId){
+        Video video =  videoService.getVideoById(videoId);
+        return R.ok(video);
+    }
 }
