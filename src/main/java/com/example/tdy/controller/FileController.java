@@ -1,16 +1,20 @@
 package com.example.tdy.controller;
 
+import com.example.tdy.annotation.AccessLimit;
 import com.example.tdy.context.LocalCache;
 import com.example.tdy.entity.File;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.R;
 import com.example.tdy.service.FileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 
 /**
  * @author Mazai-Liu
@@ -20,6 +24,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/file")
 public class FileController {
+    Logger logger = LoggerFactory.getLogger(FileController.class);
 
     @Autowired
     private FileService fileService;
@@ -66,10 +71,12 @@ public class FileController {
      * @throws IOException
      */
     @GetMapping("/{fileId}")
+    @AccessLimit(count = 20, time = 60)
     public void getFileUrl(@PathVariable Integer fileId, HttpServletResponse response) throws Exception {
         File file = fileService.getFileById(fileId);
 
         response.setContentType(file.getType());
         response.sendRedirect(file.getFileKey());
+        logger.info("获取资源：{}", file.getFileKey());
     }
 }
