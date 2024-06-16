@@ -399,6 +399,11 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public List<Video> getPatchOkVideo(int start, int count) {
+        return videoMapper.selectPatch(start, count);
+    }
+
+    @Override
     public Video getVideoById(Integer videoId) {
         Video video = videoMapper.selectById(videoId);
         video.setUser(userService.getUserVoById(video.getUserId()));
