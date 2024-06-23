@@ -68,8 +68,8 @@ public class VideoAudit extends AbstractAudit {
     @Override
     public AuditResult doAudit(Video video) throws QiniuException {
         logger.info("videoUrl: {}", video.getUrl());
-//        AuditResult auditResult = process(fileService.getRealUrl(Integer.valueOf(video.getUrl())));
 
+//        AuditResult auditResult = process(fileService.getRealUrl(Integer.valueOf(video.getUrl())));
         AuditResult auditResult = new AuditResult("成功", AuditStatus.PASS);
 
         logger.info("auditResult: {}", auditResult);

@@ -38,7 +38,8 @@ build/
 *.log.*
 
 ### yml ###
-*-dev.yml
+src/main/resources/application-*.yml
+
 
 ### other ###
 src/test/**

@@ -1,4 +1,42 @@
+server:
+  port: 8080
+
 spring:
   profiles:
     active: dev
+  datasource:
+    password: ${spring.datasource.password}
+    url:  ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    driver-class-name: ${spring.datasource.driver-class-name}
+  redis:
+    host: ${spring.redis.host}
+    port: ${spring.redis.port}
+  mail:
+    host: ${spring.mail.host}
+    username: ${spring.mail.username}
+    password: ${spring.mail.password}
+logging:
+  file:
+    name: ${logging.file.name}
+    path: ${logging.file.path}
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
 
+#jwt: data :这个路径是根据JWTUtil中的
+#@ConfigurationProperties("jwt.data")配置的
+jwt:
+  data:
+    #    jwt加密密钥
+    SECRET: ${jwt.data.SECRET}
+    #    jwt储存的请求头Authorization固定写法
+    tokenHeader: ${jwt.data.tokenHeader}
+    #      jwt的过期时间(60s*60min*24h*7day)
+    expiration: ${jwt.data.expiration}
+qiniu:
+  access-key: ${qiniu.access-key}
+  secret-key: ${qiniu.secret-key}
+  bucket-name: ${qiniu.bucket-name}
+tdy:
+  feed-strategy: ${tdy.feed-strategy}
