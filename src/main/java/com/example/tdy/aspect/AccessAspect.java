@@ -3,6 +3,7 @@ package com.example.tdy.aspect;
 import com.example.tdy.annotation.AccessLimit;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.context.BaseContext;
+import com.example.tdy.exception.BaseException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -35,7 +36,7 @@ public class AccessAspect {
         if(Boolean.TRUE.equals(stringRedisTemplate.hasKey(key))) {
             String s = stringRedisTemplate.opsForValue().get(key);
             if(Integer.parseInt(s) >= count) {
-                throw new RuntimeException("访问过于频繁");
+                throw new BaseException("访问过于频繁");
             }
             stringRedisTemplate.opsForValue().increment(key);
 
