@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageResult<User> getFollows(Integer userId, BasePage basePage) {
-        System.out.println(1);
+
         PageResult<User> page = new PageResult<>();
         // 获取所有关注的人
         List<Integer> followsIds = followService.getFollows(userId, basePage);
@@ -86,7 +86,6 @@ public class UserServiceImpl implements UserService {
             return page;
         }
 
-        System.out.println(2);
 
         // 获取交集
         Set<Integer> set = new HashSet<>(followsIds);
@@ -97,8 +96,6 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        System.out.println(3);
-
         // 获取所有follows
         List<User> users = userMapper.selectByUserIds(followsIds);
 
@@ -108,7 +105,6 @@ public class UserServiceImpl implements UserService {
                 user.setEach(true);
         });
 
-        System.out.println(4);
 
         // 获取分页数据
         users = getPaged(users, basePage);
@@ -193,9 +189,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void subscribe(String types) {
+        Integer currentId = BaseContext.getCurrentId();
+        if(currentId == null)
+            return;
+
         List<String> list = Arrays.asList(types.split(","));
         List<Subscribe> subscribes = new ArrayList<>();
-        Integer currentId = BaseContext.getCurrentId();
+
         list.forEach(type -> {
             subscribes.add(new Subscribe(currentId, Integer.parseInt(type)));
         });

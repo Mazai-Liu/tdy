@@ -1,6 +1,3 @@
-server:
-  port: 8080
-
 spring:
   profiles:
     active: dev
@@ -19,7 +16,6 @@ spring:
 logging:
   file:
     name: ${logging.file.name}
-    path: ${logging.file.path}
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

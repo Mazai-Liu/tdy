@@ -54,10 +54,12 @@ public class FileController {
      */
     @PostMapping("/auth")
     public void auth(@RequestParam(required = false) String uuid, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println(request.getRequestURI());
-        if (uuid == null || LocalCache.containsKey(uuid)){
+        logger.info("path: {}", request.getRequestURI());
+        if (uuid == null || !LocalCache.containsKey(uuid)){
+            logger.info("status: {}", 401);
             response.sendError(401);
         }else {
+            logger.info("status: {}", 200);
             LocalCache.remove(uuid);
             response.sendError(200);
         }

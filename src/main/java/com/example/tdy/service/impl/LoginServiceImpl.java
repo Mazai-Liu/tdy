@@ -48,9 +48,6 @@ public class LoginServiceImpl implements LoginService {
             throw new RegisterException(ExceptionConstant.EMAIL_EXIST);
         }
 
-        // TODO 校验验证码？
-
-
         User user = new User();
         user.setEmail(registerDto.getEmail());
         user.setPassword(registerDto.getPassword());

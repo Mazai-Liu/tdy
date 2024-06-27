@@ -14,4 +14,9 @@ public class SystemConstant {
 
     public static final String TOKEN_HEADER = "Token";
     public static String DEFAULT_FAVORITE_DESCRIPTION = "暂无描述";
+
+    public static final String OK_LIKE = "点赞成功";
+    public static final String CANCEL_LIKE = "取消点赞";
+    public static final String OK_FAVORITE= "收藏成功";
+    public static final String CANCEL_FAVORITE = "取消收藏";
 }

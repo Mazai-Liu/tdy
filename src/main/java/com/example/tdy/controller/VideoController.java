@@ -48,9 +48,9 @@ public class VideoController {
     public R favorite(@PathVariable Integer fid, @PathVariable Integer vid) {
         Integer result = videoService.favorite(fid, vid);
         if(result==1) {
-            return R.okWithMessage("收藏成功");
+            return R.okWithMessage(SystemConstant.OK_FAVORITE);
         }
-        return R.okWithMessage("取消收藏");
+        return R.okWithMessage(SystemConstant.CANCEL_FAVORITE);
     }
 
     @GetMapping("/favorite/{fid}")
@@ -89,9 +89,9 @@ public class VideoController {
         Integer uid = BaseContext.getCurrentId();
         Integer star =  videoService.like(vid,uid);
         if(star == 1) {
-            return R.okWithMessage("点赞成功");
+            return R.okWithMessage(SystemConstant.OK_LIKE);
         }else
-            return R.okWithMessage("取消点赞");
+            return R.okWithMessage(SystemConstant.CANCEL_LIKE);
     }
 
 }
