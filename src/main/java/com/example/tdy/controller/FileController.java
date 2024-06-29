@@ -9,10 +9,12 @@ import com.example.tdy.service.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 
@@ -23,6 +25,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/file")
+@Validated
 public class FileController {
     Logger logger = LoggerFactory.getLogger(FileController.class);
 
@@ -74,7 +77,7 @@ public class FileController {
      */
     @GetMapping("/{fileId}")
     @AccessLimit(count = 20, time = 60)
-    public void getFileUrl(@PathVariable Integer fileId, HttpServletResponse response) throws Exception {
+    public void getFileUrl(@PathVariable @NotNull Integer fileId, HttpServletResponse response) throws Exception {
         File file = fileService.getFileById(fileId);
 
         response.setContentType(file.getType());

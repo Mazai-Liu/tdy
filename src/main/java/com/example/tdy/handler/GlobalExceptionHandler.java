@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 /**
  * @author Mazai-Liu
  * @time 2024/3/19
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    @ExceptionHandler(value = {BaseException.class})
+    @ExceptionHandler(value = {BaseException.class, ConstraintViolationException.class})
     public R globalException(BaseException e) {
         logger.error("{}", e);
         return R.error(e.getMessage());

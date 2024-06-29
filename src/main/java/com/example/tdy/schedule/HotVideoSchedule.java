@@ -53,7 +53,7 @@ public class HotVideoSchedule {
     private static final int PATCH_SIZE = 1000;
 
 
-    @Scheduled(cron = "0 * 0/3 * * ?")
+    @Scheduled(cron = "0 0 0/3 * * ? ")
     public void hotVideoRank() {
         logger.info("定时任务， 获取热门视频");
         // 每隔三小时获取库中视频计算热度值 = 半衰期公式，放入redis的热门视频以及热门视频排序中
@@ -110,7 +110,7 @@ public class HotVideoSchedule {
     }
 
 
-    @Scheduled(cron = "0 * 0/1 * * ?")
+    @Scheduled(cron = "0 0 0/1 * * ? ")
     public void hotRank() {
         logger.info("定时任务， 获取热门视频排行榜");
 
