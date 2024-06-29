@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
@@ -45,7 +46,7 @@ public class FileController {
      * @return
      */
     @PostMapping("")
-    public R<Integer> fileKey(String fileKey) {
+    public R<Integer> fileKey(@NotBlank String fileKey) {
         return R.ok(fileService.save(fileKey));
     }
 

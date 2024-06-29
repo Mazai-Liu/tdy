@@ -3,16 +3,21 @@ package com.example.tdy.service.impl;
 import com.example.tdy.constant.ExceptionConstant;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.constant.SystemConstant;
+import com.example.tdy.context.BaseContext;
 import com.example.tdy.dto.LoginDto;
 import com.example.tdy.dto.RegisterDto;
 import com.example.tdy.entity.Favorite;
+import com.example.tdy.entity.File;
 import com.example.tdy.entity.User;
 import com.example.tdy.exception.LoginException;
 import com.example.tdy.exception.RegisterException;
 import com.example.tdy.mapper.FavoriteMapper;
+import com.example.tdy.mapper.FileMapper;
 import com.example.tdy.mapper.UserMapper;
 import com.example.tdy.service.LoginService;
+import com.example.tdy.utils.CozeUtil;
 import com.example.tdy.utils.JwtUtil;
+import com.example.tdy.utils.ThreadPoolUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 
 /**
@@ -40,6 +46,15 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private CozeUtil cozeUtil;
+
+    @Autowired
+    private FileMapper fileMapper;
+
+    @Autowired
+    private ThreadPoolUtil threadPoolUtil;
+
     @Override
     @Transactional
     public void register(RegisterDto registerDto) throws RegisterException {
@@ -54,7 +69,7 @@ public class LoginServiceImpl implements LoginService {
         user.setNickname(registerDto.getNickName());
         user.setDescription(SystemConstant.DEFAULT_DESCRIPTION);
         user.setState(SystemConstant.USER_NORMAL);
-        user.setAvatar(SystemConstant.DEFAULT_AVATAR);
+        getAvatarFileId(user);
         userMapper.insert(user);
 
         Favorite favorite = new Favorite();
@@ -97,5 +112,24 @@ public class LoginServiceImpl implements LoginService {
         data.put("name", user.getNickname());
         data.put("token", token);
         return data;
+    }
+
+    public void getAvatarFileId(User user) {
+        threadPoolUtil.submit(()->{
+            String prompt = "请生成一张可爱、性感、悠闲风格的头像";
+            File file = new File();
+
+            String avatar_path = cozeUtil.promptToAvatar(prompt);
+
+            file.setFileKey(avatar_path);
+            file.setFormat("png");
+            file.setType("图片");
+            file.setUserId(BaseContext.getCurrentId());
+
+            fileMapper.insert(file);
+
+            user.setAvatar(file.getId());
+        });
+
     }
 }

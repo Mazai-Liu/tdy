@@ -73,9 +73,9 @@ public class UserController {
     }
 
     @GetMapping("/getInfo/{id}")
-    public R<User> getInfo(@NotNull @PathVariable Integer id) {
-        User user = userService.getById(id);
-        return R.ok(user);
+    public R<UserVO> getInfo(@NotNull @PathVariable Integer id) {
+        UserVO userVO = userService.getById(id);
+        return R.ok(userVO);
     }
 
 

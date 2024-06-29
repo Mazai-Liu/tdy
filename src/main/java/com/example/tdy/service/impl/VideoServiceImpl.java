@@ -15,7 +15,7 @@ import com.example.tdy.result.R;
 import com.example.tdy.service.*;
 import com.example.tdy.service.audit.VideoPublishAuditServiceImpl;
 import com.example.tdy.utils.FileUtil;
-import com.example.tdy.utils.GenerateIdUtil;
+import com.example.tdy.utils.GeneratorUtil;
 import com.example.tdy.utils.RedisUtil;
 import com.example.tdy.vo.UserVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -125,7 +125,7 @@ public class VideoServiceImpl implements VideoService {
             }
 
             // set YV
-            video.setLv(GenerateIdUtil.generateLvId());
+            video.setLv(GeneratorUtil.generateLvId());
 
             // 填充视频时长
             String realUrl = fileService.getFileById(Integer.parseInt(video.getUrl())).getFileKey();

@@ -25,7 +25,7 @@ public interface UserService {
 
     void follow(Integer followId) throws BaseException;
 
-    User getById(Integer id);
+    UserVO getById(Integer id);
 
     UserVO getUserVoById(Integer userId);
 

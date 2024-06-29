@@ -36,3 +36,6 @@ qiniu:
   bucket-name: ${qiniu.bucket-name}
 tdy:
   feed-strategy: ${tdy.feed-strategy}
+coze:
+  secret-key: ${coze.secret-key}
+  bot-id: ${coze.bot-id}

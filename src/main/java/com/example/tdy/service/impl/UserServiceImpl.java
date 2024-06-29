@@ -54,20 +54,16 @@ public class UserServiceImpl implements UserService {
         if(currentId == null)
             return null;
 
-        User user = getById(currentId);
+        return getById(currentId);
+    }
+
+    @Override
+    public UserVO getById(Integer id) {
+        User user = userMapper.selectByUserId(id);
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
 
         return userVO;
-    }
-
-    @Override
-    public User getById(Integer id) {
-        if(id == null || id == 0)
-            return null;
-        List<Integer> ids = new ArrayList<>();
-        ids.add(id);
-        return userMapper.selectByUserIds(ids).get(0);
     }
 
     @Override
