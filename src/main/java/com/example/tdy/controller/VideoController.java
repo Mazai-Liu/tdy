@@ -10,8 +10,10 @@ import com.example.tdy.result.PageResult;
 import com.example.tdy.result.R;
 import com.example.tdy.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +25,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/video")
+@Validated
 public class VideoController {
 
     @Autowired
     private VideoService videoService;
 
     @PostMapping("")
-    public R uploadVideo(@RequestBody Video video) throws BaseException {
+    public R uploadVideo(@NotNull @RequestBody Video video) throws BaseException {
         videoService.uploadVideo(video);
         return R.ok(VideoConstant.WAIT_AUDIT);
     }
 
     @PostMapping("/history/{videoId}")
-    public void getVideoByUserId(@PathVariable Integer videoId) {
+    public void getVideoByUserId(@NotNull @PathVariable Integer videoId) {
         videoService.addHistory(videoId);
     }
 
@@ -45,16 +48,16 @@ public class VideoController {
         return R.ok(result);
     }
     @PostMapping("/favorites/{fid}/{vid}")
-    public R favorite(@PathVariable Integer fid, @PathVariable Integer vid) {
+    public R favorite(@NotNull @PathVariable Integer fid, @NotNull  @PathVariable Integer vid) {
         Integer result = videoService.favorite(fid, vid);
         if(result==1) {
-            return R.okWithMessage("收藏成功");
+            return R.okWithMessage(SystemConstant.OK_FAVORITE);
         }
-        return R.okWithMessage("取消收藏");
+        return R.okWithMessage(SystemConstant.CANCEL_FAVORITE);
     }
 
     @GetMapping("/favorite/{fid}")
-    public R<List<Video>> getFavorite(@PathVariable Integer fid) {
+    public R<List<Video>> getFavorite(@NotNull @PathVariable Integer fid) {
         List<Video> videos = videoService.getByFavoriteId(fid);
         return R.ok(videos);
     }
@@ -85,13 +88,13 @@ public class VideoController {
         return R.ok();
     }
     @PostMapping("/star/{vid}")
-    public R like(@PathVariable Integer vid){
+    public R like(@NotNull @PathVariable Integer vid){
         Integer uid = BaseContext.getCurrentId();
         Integer star =  videoService.like(vid,uid);
         if(star == 1) {
-            return R.okWithMessage("点赞成功");
+            return R.okWithMessage(SystemConstant.OK_LIKE);
         }else
-            return R.okWithMessage("取消点赞");
+            return R.okWithMessage(SystemConstant.CANCEL_LIKE);
     }
 
 }

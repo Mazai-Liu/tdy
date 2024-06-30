@@ -1,16 +1,23 @@
 package com.example.tdy.controller;
 
+import com.example.tdy.annotation.AccessLimit;
 import com.example.tdy.context.LocalCache;
 import com.example.tdy.entity.File;
 import com.example.tdy.exception.BaseException;
 import com.example.tdy.result.R;
 import com.example.tdy.service.FileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
+
 
 /**
  * @author Mazai-Liu
@@ -19,7 +26,9 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/file")
+@Validated
 public class FileController {
+    Logger logger = LoggerFactory.getLogger(FileController.class);
 
     @Autowired
     private FileService fileService;
@@ -37,7 +46,7 @@ public class FileController {
      * @return
      */
     @PostMapping("")
-    public R<Integer> fileKey(String fileKey) {
+    public R<Integer> fileKey(@NotBlank String fileKey) {
         return R.ok(fileService.save(fileKey));
     }
 
@@ -49,10 +58,12 @@ public class FileController {
      */
     @PostMapping("/auth")
     public void auth(@RequestParam(required = false) String uuid, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println(request.getRequestURI());
-        if (uuid == null || LocalCache.containsKey(uuid)){
+        logger.info("path: {}", request.getRequestURI());
+        if (uuid == null || !LocalCache.containsKey(uuid)){
+            logger.info("status: {}", 401);
             response.sendError(401);
         }else {
+            logger.info("status: {}", 200);
             LocalCache.remove(uuid);
             response.sendError(200);
         }
@@ -66,10 +77,12 @@ public class FileController {
      * @throws IOException
      */
     @GetMapping("/{fileId}")
-    public void getFileUrl(@PathVariable Integer fileId, HttpServletResponse response) throws Exception {
+    @AccessLimit(count = 20, time = 60)
+    public void getFileUrl(@PathVariable @NotNull Integer fileId, HttpServletResponse response) throws Exception {
         File file = fileService.getFileById(fileId);
 
         response.setContentType(file.getType());
         response.sendRedirect(file.getFileKey());
+        logger.info("获取资源：{}", file.getFileKey());
     }
 }

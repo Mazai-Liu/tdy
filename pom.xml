@@ -6,7 +6,7 @@
   <groupId>com.example</groupId>  
   <artifactId>tdy</artifactId>  
   <version>0.0.1-SNAPSHOT</version>  
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <name>tdy</name>  
   <description>tdy</description>  
   <properties> 
@@ -16,6 +16,10 @@
     <spring-boot.version>2.6.13</spring-boot.version> 
   </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -151,7 +155,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.tdy.TdyApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

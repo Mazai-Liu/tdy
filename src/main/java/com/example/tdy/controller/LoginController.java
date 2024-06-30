@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +66,7 @@ public class LoginController {
 
 
     @PostMapping("/check")
-    public R check(String email, String code){
+    public R check(@NotBlank String email, @NotNull String code){
         logger.info("验证邮箱验证码");
         // 验证邮箱验证码
         String key = RedisConstant.EMAIL_PREFIX + email;
@@ -75,7 +77,7 @@ public class LoginController {
 
 
     @RequestMapping("/captcha.jpg/{uuid}")
-    public void getCaptcha(@PathVariable("uuid") @NotEmpty String uuid, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getCaptcha(@PathVariable("uuid") @NotBlank String uuid, HttpServletRequest request, HttpServletResponse response) throws Exception {
         logger.info("获取图形验证码");
         // 生成图形验证码
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 4);

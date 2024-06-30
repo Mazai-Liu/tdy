@@ -49,42 +49,55 @@ public class HotVideoSchedule {
     // 假设视频半衰期是3天
     private static final long HALF_LIFE_T = 3 * 24 * 60 * 60 * 1000;
 
-    private static final int RANK_NUM = 100;
+    private static final int RANK_NUM = 10;
+    private static final int PATCH_SIZE = 1000;
 
 
-//    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0 0/3 * * ? ")
     public void hotVideoRank() {
         logger.info("定时任务， 获取热门视频");
         // 每隔三小时获取库中视频计算热度值 = 半衰期公式，放入redis的热门视频以及热门视频排序中
-        // TODO 优化效率
 
         // 获取所有可访问视频
-        List<Video> videos = videoService.getAllOkVideo();
-
+        List<Video> videos;
         ArrayList<Integer> hotVideoIds = new ArrayList<>();
-        // 获取每个视频的热度值，大于阈值就放入热门视频中
-        videos.forEach(video -> {
-            Integer like = video.getLikes();
-            Integer comment = video.getComments();
-            Integer share = video.getShares();
-            Integer favorite = video.getFavorites();
-            Integer browse = video.getBrowses();
 
-            LocalDateTime createTime = video.getCreateTime();
-            Long t = System.currentTimeMillis() - createTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        int n = 0;
+        do {
+            videos = videoService.getPatchOkVideo(n, PATCH_SIZE);
 
-            double hot = halfLife(like * WEIGHT_LIKE + comment * WEIGHT_COMMENT + share * WEIGHT_SHARE
-                    + favorite * WEIGHT_FAVORITE + browse * WEIGHT_BROWSE, t);
-            if (hot > HOT_THRESHOLD) {
-                hotVideoIds.add(video.getId());
+            n += videos.size();
+
+            if (videos.isEmpty()) {
+                break;
             }
-        });
+
+            // 获取每个视频的热度值，大于阈值就放入热门视频中
+            videos.forEach(video -> {
+                Integer like = video.getLikes();
+                Integer comment = video.getComments();
+                Integer share = video.getShares();
+                Integer favorite = video.getFavorites();
+                Integer browse = video.getBrowses();
+
+                LocalDateTime createTime = video.getCreateTime();
+                Long t = System.currentTimeMillis() - createTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+
+                double hot = halfLife(like * WEIGHT_LIKE + comment * WEIGHT_COMMENT + share * WEIGHT_SHARE
+                        + favorite * WEIGHT_FAVORITE + browse * WEIGHT_BROWSE, t);
+                if (hot > HOT_THRESHOLD) {
+                    hotVideoIds.add(video.getId());
+                }
+            });
+
+        } while(true);
 
         if(!ObjectUtils.isEmpty(hotVideoIds)) {
             // 加入redis热度榜中
             String key = RedisConstant.HOT_VIDEO + LocalDateTime.now().getDayOfMonth();
-            int n = hotVideoIds.size();
-            String[] array = hotVideoIds.stream().map(String::valueOf).collect(Collectors.toList()).toArray(new String[n]);
+            int size = hotVideoIds.size();
+            String[] array = hotVideoIds.stream().map(String::valueOf).
+                    collect(Collectors.toList()).toArray(new String[size]);
 
             stringRedisTemplate.opsForSet().add(key, array);
             stringRedisTemplate.expire(key, RedisConstant.HOT_VIDEO_TIMEOUT, RedisConstant.HOT_VIDEO_TIMEOUT_UNIT);
@@ -93,60 +106,64 @@ public class HotVideoSchedule {
 
     private double halfLife(Integer score, Long t) {
         // res = score * (1/2)^(t / T)
-
         return score * Math.pow(0.5, (double) t / HALF_LIFE_T);
     }
 
 
-//    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0 0/1 * * ? ")
     public void hotRank() {
         logger.info("定时任务， 获取热门视频排行榜");
 
         // 小根堆
-        TopK topK = new TopK(10);
+        TopK topK = new TopK(RANK_NUM);
 
-        // TODO 优化效率
         // 获取所有可访问视频
-        List<Video> videos = videoService.getAllOkVideo();
+        List<Video> videos;
+        int n = 0;
+        do {
+            videos = videoService.getPatchOkVideo(n, PATCH_SIZE);
 
-        videos.forEach(video -> {
-            Integer like = video.getLikes();
-            Integer comment = video.getComments();
-            Integer share = video.getShares();
-            Integer favorite = video.getFavorites();
-            Integer browse = video.getBrowses();
+            n += videos.size();
 
-            LocalDateTime createTime = video.getCreateTime();
-            Long t = System.currentTimeMillis() - createTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            if (videos.isEmpty()) {
+                break;
+            }
 
-            double hot = halfLife(like * WEIGHT_LIKE + comment * WEIGHT_COMMENT + share * WEIGHT_SHARE
-                    + favorite * WEIGHT_FAVORITE + browse * WEIGHT_BROWSE, t);
+            videos.forEach(video -> {
+                Integer like = video.getLikes();
+                Integer comment = video.getComments();
+                Integer share = video.getShares();
+                Integer favorite = video.getFavorites();
+                Integer browse = video.getBrowses();
 
-            System.out.println(hot);
+                LocalDateTime createTime = video.getCreateTime();
+                Long t = System.currentTimeMillis() - createTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
-            topK.add(new HotVideo(hot, video.getId(), video.getTitle()));
-        });
+                double hot = 10000 * halfLife(like * WEIGHT_LIKE + comment * WEIGHT_COMMENT + share * WEIGHT_SHARE
+                        + favorite * WEIGHT_FAVORITE + browse * WEIGHT_BROWSE, t);
+
+                topK.add(new HotVideo(hot, video.getId(), video.getTitle()));
+            });
+        } while(true);
 
         Double minHot = topK.getMin().getHot();
         final byte[] key = RedisConstant.HOT_VIDEO_RANK.getBytes();
 
         stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
             PriorityQueue<HotVideo> queue = topK.getQueue();
+
             for (HotVideo hotVideo : queue) {
                 final Double hot = hotVideo.getHot();
                 try {
                     hotVideo.setHot(null);
-                    // 不这样写铁报错！序列化问题
 
                     connection.zAdd(key, hot, JSON.toJSONString(hotVideo).getBytes());
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             return null;
         });
-        stringRedisTemplate.opsForZSet().removeRangeByScore(RedisConstant.HOT_VIDEO_RANK, minHot,0);
+        stringRedisTemplate.opsForZSet().removeRangeByScore(RedisConstant.HOT_VIDEO_RANK, 0, minHot - 1);
     }
 }

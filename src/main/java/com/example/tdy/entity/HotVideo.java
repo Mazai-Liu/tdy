@@ -31,6 +31,7 @@ public class HotVideo implements Serializable {
         this.hot = hot;
         this.videoId = videoId;
         this.title = title;
+        this.hotFormat();
     }
 
 

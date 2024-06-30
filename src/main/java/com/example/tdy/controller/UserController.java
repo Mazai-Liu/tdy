@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -29,6 +32,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
+@Validated
 public class UserController {
 
     Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -43,20 +47,20 @@ public class UserController {
     private InterestPushService interestPushService;
 
     @PostMapping("/follows")
-    public R follow(Integer followId) throws BaseException {
+    public R follow(@NotNull Integer followId) throws BaseException {
         userService.follow(followId);
         return R.ok();
     }
 
     @GetMapping("/fans")
-    public R<PageResult<User>> getFans(Integer userId, BasePage basePage) {
+    public R<PageResult<User>> getFans(@NotNull Integer userId, BasePage basePage) {
         logger.info("获取粉丝，{}", userId);
         PageResult<User> pageResult = userService.getFans(userId, basePage);
         return R.ok(pageResult);
     }
 
     @GetMapping("/follows")
-    public R<PageResult<User>> getFollows(Integer userId, BasePage basePage) {
+    public R<PageResult<User>> getFollows(@NotNull Integer userId, BasePage basePage) {
         logger.info("获取关注，{}", userId);
         PageResult<User> pageResult = userService.getFollows(userId, basePage);
         return R.ok(pageResult);
@@ -69,9 +73,9 @@ public class UserController {
     }
 
     @GetMapping("/getInfo/{id}")
-    public R<User> getInfo(@PathVariable Integer id) {
-        User user = userService.getById(id);
-        return R.ok(user);
+    public R<UserVO> getInfo(@NotNull @PathVariable Integer id) {
+        UserVO userVO = userService.getById(id);
+        return R.ok(userVO);
     }
 
 
@@ -82,7 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/favorites/{id}")
-    public R<Favorite> getFavorite(@PathVariable Integer id) {
+    public R<Favorite> getFavorite(@NotNull @PathVariable("id") Integer id) {
         Favorite favorite = favoriteService.getFavoriteById(id);
         return R.ok(favorite);
     }
@@ -94,14 +98,14 @@ public class UserController {
     }
 
     @DeleteMapping("/favorites/{ids}")
-    public R deleteFavorite(@PathVariable("ids") List<Integer> ids) {
+    public R deleteFavorite(@NotEmpty @PathVariable("ids") List<Integer> ids) {
         System.out.println(ids);
         favoriteService.deleteByIds(ids);
         return R.ok();
     }
 
     @PostMapping("/subscribe")
-    public R subscribe(String types) {
+    public R subscribe(@NotBlank String types) {
         userService.subscribe(types);
         return R.ok();
     }
@@ -119,7 +123,7 @@ public class UserController {
     }
 
     @PostMapping("/updateUserModel")
-    public R updateUserModel(@RequestBody UerModelDTO userModelDto) {
+    public R updateUserModel(@NotNull @RequestBody UerModelDTO userModelDto) {
         interestPushService.updateUserModel(userModelDto);
         return R.ok();
     }

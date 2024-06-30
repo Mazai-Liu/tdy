@@ -78,9 +78,17 @@ public class FileServiceImpl implements FileService {
             throw new BaseException(VideoConstant.FILE_NOT_EXIST);
         }
 
-        // 通过id生成url，可控制用于回源鉴权
-        String fileKey = generateFileKey(file.getFileKey());
-        file.setFileKey(fileKey);
+        // 通过id生成url。可能是Coze的资源
+        // 七牛云需要控制用于回源鉴权
+
+        String fileKey;
+        // Coze
+        if((fileKey = file.getFileKey()).startsWith("http")) {
+            file.setFileKey(fileKey);
+        } else {
+            fileKey = generateFileKey(file.getFileKey());
+            file.setFileKey(fileKey);
+        }
 
         return file;
     }
@@ -107,11 +115,11 @@ public class FileServiceImpl implements FileService {
     }
 
     public String generateFileKey(String key) {
-        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
+//        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
         // 回源鉴权
-//        String uuid = UUID.randomUUID().toString();
-//        LocalCache.set(uuid, true);
-//        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key + "?uuid=" + uuid;
+        String uuid = UUID.randomUUID().toString();
+        LocalCache.set(uuid, true);
+        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key + "?uuid=" + uuid;
     }
 
 }

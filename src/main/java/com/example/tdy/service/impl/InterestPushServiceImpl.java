@@ -9,6 +9,8 @@ import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.service.InterestPushService;
 import com.example.tdy.service.TypeService;
 import com.example.tdy.utils.RedisUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class InterestPushServiceImpl implements InterestPushService {
+
+    Logger logger = LoggerFactory.getLogger(InterestPushServiceImpl.class);
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -107,7 +111,7 @@ public class InterestPushServiceImpl implements InterestPushService {
         // 游客
         // 随机获取10个标签
         final List<String> labels = typeService.random10Labels();
-        System.out.println(labels);
+        logger.info("随机标签：{}", labels);
 
         final ArrayList<String> labelNames = new ArrayList<>();
 
@@ -118,14 +122,14 @@ public class InterestPushServiceImpl implements InterestPushService {
             final int randomIndex = random.nextInt(size);
             labelNames.add(RedisConstant.SYSTEM_STOCK + labels.get(randomIndex));
         }
-        System.out.println("最后将要取：" + labelNames);
+        logger.info("最后将要取：{}", labelNames);
 
         // 获取videoId
         final List<Object> list = redisUtil.sRandom(labelNames);
         if (!ObjectUtils.isEmpty(list)){
             videoIds = list.stream().filter(id ->!ObjectUtils.isEmpty(id)).map(id -> Integer.valueOf(id.toString())).collect(Collectors.toSet());
         }
-        System.out.println(videoIds);
+        logger.info("video ids：{}", videoIds);
         return videoIds;
     }
 

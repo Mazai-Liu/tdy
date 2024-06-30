@@ -51,4 +51,5 @@ public class RedisConstant {
 
     public static final String HOT_VIDEO_RANK = "video:hot:rank:";
 
+    public static final String ACCESS_LIMIT = "access:limit:";
 }
