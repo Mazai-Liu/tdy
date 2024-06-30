@@ -28,6 +28,9 @@ public interface VideoMapper {
     @Select("select id,likes,shares,favorites,browses,comments,title,create_time from video where open = 1 and audit_status = 1")
     List<Video> selectALl();
 
+    @Select("select * from video ")
+    List<Video> selectALlTest();
+
     @Select("select id,likes,shares,favorites,browses,comments,title,create_time from video" +
             " where open = 1 and audit_status = 1" +
             " limit #{start}, #{count}")

@@ -69,6 +69,7 @@ public class LoginServiceImpl implements LoginService {
         user.setNickname(registerDto.getNickName());
         user.setDescription(SystemConstant.DEFAULT_DESCRIPTION);
         user.setState(SystemConstant.USER_NORMAL);
+        user.setAvatar(SystemConstant.DEFAULT_AVATAR);
         getAvatarFileId(user);
         userMapper.insert(user);
 
