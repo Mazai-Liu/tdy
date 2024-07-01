@@ -4,6 +4,7 @@ import com.example.tdy.entity.Video;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -35,4 +36,7 @@ public interface VideoMapper {
             " where open = 1 and audit_status = 1" +
             " limit #{start}, #{count}")
     List<Video> selectPatch(@Param("start") int start, @Param("count") int count);
+
+    @Update("update video set comments = comments + 1 where id = #{videoId}")
+    void plusComments(Integer videoId);
 }

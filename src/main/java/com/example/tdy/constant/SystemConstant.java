@@ -13,6 +13,8 @@ public class SystemConstant {
     public static final Integer FAVORITE_PUBLIC = 1;
 
     public static final String TOKEN_HEADER = "Token";
+    public static final String COMMENT_SELF = "不能评论自己";
+    public static final String COMMENT_NOAUTH = "无权限评论";
     public static String DEFAULT_FAVORITE_DESCRIPTION = "暂无描述";
 
     public static final String OK_LIKE = "点赞成功";
