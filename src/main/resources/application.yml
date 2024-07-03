@@ -38,4 +38,5 @@ tdy:
   feed-strategy: ${tdy.feed-strategy}
 coze:
   secret-key: ${coze.secret-key}
-  bot-id: ${coze.bot-id}
+  avatar-bot-id: ${coze.bot-id}
+  reply-bot-id: ${coze.reply-bot-id}

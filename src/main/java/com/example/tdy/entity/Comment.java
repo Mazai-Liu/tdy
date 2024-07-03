@@ -27,6 +27,7 @@ public class Comment {
 
     private String content;
     private UserVO userVO;
+    private String label;
 
     private Integer likes = 0;
     private Integer dislikes = 0;

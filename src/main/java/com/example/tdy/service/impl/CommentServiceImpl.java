@@ -14,6 +14,8 @@ import com.example.tdy.result.PageResult;
 import com.example.tdy.service.CommentService;
 import com.example.tdy.service.UserService;
 import com.example.tdy.service.VideoService;
+import com.example.tdy.utils.CozeUtil;
+import com.example.tdy.utils.ThreadPoolUtil;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ThreadPoolUtil threadPoolUtil;
+
+    @Autowired
+    private CozeUtil cozeUtil;
 
     public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -98,17 +106,17 @@ public class CommentServiceImpl implements CommentService {
 
     private void checkBeforeAdd(CommentAddDto commentAddDto) throws BaseException {
         Integer commentUserid = commentAddDto.getUserId();
-//        Integer currentId = BaseContext.getCurrentId();
-//        if(currentId == null ||!commentUserid.equals(currentId)) {
-//            // 未登录或水平越权评论
-//            throw new BaseException(SystemConstant.COMMENT_NOAUTH);
-//        }
+        Integer currentId = BaseContext.getCurrentId();
+        if(currentId == null ||!commentUserid.equals(currentId)) {
+            // 未登录或水平越权评论
+            throw new BaseException(SystemConstant.COMMENT_NOAUTH);
+        }
 
         // 自己评论自己
-//        Integer commentedUserId = commentAddDto.getReplyToUserid();
-//        if(commentedUserId != null && commentAddDto.getRootId() != 0 && commentedUserId.equals(commentUserid)) {
-//            throw new BaseException(SystemConstant.COMMENT_SELF);
-//        }
+        Integer commentedUserId = commentAddDto.getReplyToUserid();
+        if(commentedUserId != null && commentAddDto.getRootId() != 0 && commentedUserId.equals(commentUserid)) {
+            throw new BaseException(SystemConstant.COMMENT_SELF);
+        }
     }
 
     @Transactional
@@ -118,25 +126,6 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentAddDto, comment);
-
-        // 如果是 回复某评论 而不是 回复视频，则设置parentId?
-        Integer replyToReplyId = comment.getReplyToReplyId();
-//        if(replyToReplyId == 0) {
-//            // 回复评论，设置parent，回复数+1
-//            comment.setParentId(replyToReplyId);
-//            commentMapper.replyPlus(replyToReplyId, 1);
-//
-//            // 回复的是根级评论，即rootId是0。
-//            Integer rootId = comment.getRootId();
-//            if(rootId == 0) {
-//                comment.setRootId(commentAddDto.getCid());
-//            } else {
-//                // 回复的是二级评论。根的评论也要+1
-//                comment.setRootId(rootId);
-//                comment.setReplyToReplyId(commentAddDto.getCid());
-//                commentMapper.replyPlus(rootId, 1);
-//            }
-//        }
 
         Integer toCommentedCid = commentAddDto.getCid();
         Integer toCommentedUserId = commentAddDto.getReplyToUserid();
@@ -173,10 +162,42 @@ public class CommentServiceImpl implements CommentService {
         }
 
         comment.setCreateTime(LocalDateTime.now());
+
+
         commentMapper.insert(comment);
 
         // 视频的评论数+1
         videoMapper.plusComments(comment.getVideoId());
+
+        // 触发 bot 回复
+        if(isNeedBot(comment)) {
+            botReply(comment);
+        }
+    }
+
+    private boolean isNeedBot(Comment comment) {
+        // 作者视频被回复
+        if(videoMapper.selectById(comment.getVideoId()).getUserId() != 3)
+            return false;
+
+        // 作者评论被回复
+        return comment.getReplyToUserid() == 3;
+    }
+
+    public void botReply(Comment comment) throws BaseException {
+//        threadPoolUtil.submit(() -> {
+            CommentAddDto commentAddDto = new CommentAddDto();
+            BeanUtils.copyProperties(comment, commentAddDto);
+
+            commentAddDto.setUserId(comment.getReplyToUserid());
+            commentAddDto.setContent(cozeUtil.getBotReply(comment));
+
+            commentAddDto.setCid(comment.getId());
+            commentAddDto.setReplyToUserid(comment.getUserId());
+            commentAddDto.setReplyToUsername(userService.getUserVoById(comment.getUserId()).getNickname());
+
+//            add(commentAddDto);
+//        });
     }
 
     @Override
@@ -186,4 +207,7 @@ public class CommentServiceImpl implements CommentService {
         commentMapper.delete(commentDelDto.getCid());
     }
 
+    public Comment getById(Integer cid) {
+        return commentMapper.selectById(cid);
+    }
 }

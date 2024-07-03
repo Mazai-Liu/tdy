@@ -24,4 +24,7 @@ public interface CommentMapper {
 
     @Delete("update comment set is_delete = 1 where id = #{cid}")
     void delete(Integer cid);
+
+    @Select("select * from comment where id = #{cid}")
+    Comment selectById(Integer cid);
 }
