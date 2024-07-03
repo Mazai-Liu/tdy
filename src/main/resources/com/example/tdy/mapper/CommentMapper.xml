@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.tdy.mapper.CommentMapper">
     <insert id="insert">
-        insert into comment(content, root_ID, parent_id, reply_count, is_delete, reply_to_userid, reply_to_cid, reply_to_username, user_id, video_id, likes, dislikes, create_time)
-        values (#{content}, #{rootId}, #{parentId}, #{replyCount}, #{isDelete}, #{replyToUserid}, #{replyToCid}, #{replyToUsername}, #{userId}, #{videoId}, #{likes}, #{dislikes}, #{createTime})
+        insert into comment(content, root_ID, parent_id, reply_count, is_delete, reply_to_userid, replyToReplyId, reply_to_username, user_id, video_id, likes, dislikes, create_time)
+        values (#{content}, #{rootId}, #{parentId}, #{replyCount}, #{isDelete}, #{replyToUserid}, #{replyToReplyId}, #{replyToUsername}, #{userId}, #{videoId}, #{likes}, #{dislikes}, #{createTime})
     </insert>
     <select id="selectByDto" resultType="com.example.tdy.entity.Comment">
         select * from comment

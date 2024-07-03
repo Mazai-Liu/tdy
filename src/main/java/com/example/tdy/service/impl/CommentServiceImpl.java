@@ -19,8 +19,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -37,20 +37,22 @@ public class CommentServiceImpl implements CommentService {
     private VideoMapper videoMapper;
 
     @Autowired
-
     private UserService userService;
+
+    public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public PageResult<Comment> list(CommentListDto commentListDto) {
         PageResult<Comment> pageResult = new PageResult<>();
 
         List<Comment> comments = commentMapper.selectByDto(commentListDto);
-
+        // 填充回复和用户信息
         Integer videoId = commentListDto.getVideoId();
+        buildComments(videoId, comments);
 
-        buildReplies(videoId, comments);
+        // TODO 排序等
 
 
-
+        // 查看评论总数，有点小差距问题不大
         Video video = videoMapper.selectById(commentListDto.getVideoId());
 
         pageResult.setRecords(comments);
@@ -60,25 +62,38 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-
-
-    private void buildReplies(Integer videoId, List<Comment> comments) {
+    private void buildComments(Integer videoId, List<Comment> comments) {
         comments.forEach(comment -> {
-//            comment.setUserVO(userService.getUserVoById(comment.getUserId()));
+            // 设置用户信息
+//           comment.setUserVO(userService.getUserVoById(comment.getUserId()));
             comment.setUserVO(userService.getUserVoById(3));
+
+            // 设置回复
             if(comment.getReplyCount() != 0) {
-                Integer rootId = comment.getId();
-
-                comment.setReplies(commentMapper.selectByDto(new CommentListDto(videoId, rootId, 0, 2)));
-
-                comment.getReplies().forEach(reply -> {
-                    reply.setUserVO(userService.getUserVoById(3));
-//                    reply.setUserVO(userService.getUserVoById(comment.getUserId()));
-                });
-
-                comment.setMore(comment.getReplyCount() - comment.getReplies().size());
+                buildReplies(videoId, comment);
             }
+
+            // 设置时间格式
+            buildTime(comment);
         });
+    }
+
+    private void buildTime(Comment comment) {
+        comment.getCreateTime().format(format);
+    }
+
+    private void buildReplies(Integer videoId, Comment comment) {
+        Integer rootId = comment.getId();
+
+        comment.setReplies(commentMapper.selectByDto(new CommentListDto(videoId, rootId, 0, 2)));
+
+        comment.getReplies().forEach(reply -> {
+            reply.setUserVO(userService.getUserVoById(3));
+//          reply.setUserVO(userService.getUserVoById(comment.getUserId()));
+            buildTime(reply);
+        });
+
+        comment.setMore(comment.getReplyCount() - comment.getReplies().size());
     }
 
     private void checkBeforeAdd(CommentAddDto commentAddDto) throws BaseException {
@@ -105,19 +120,20 @@ public class CommentServiceImpl implements CommentService {
         BeanUtils.copyProperties(commentAddDto, comment);
 
         // 如果是 回复某评论 而不是 回复视频，则设置parentId?
-        Integer cid = comment.getReplyToCid();
-        if(cid != null) {
+        Integer replyToReplyId = comment.getReplyToReplyId();
+        if(replyToReplyId == 0) {
             // 回复评论，设置parent，回复数+1
-            comment.setParentId(cid);
-            commentMapper.replyPlus(cid, 1);
+            comment.setParentId(replyToReplyId);
+            commentMapper.replyPlus(replyToReplyId, 1);
 
             // 回复的是根级评论，即rootId是0。
             Integer rootId = comment.getRootId();
             if(rootId == 0) {
-                comment.setRootId(cid);
+                comment.setRootId(replyToReplyId);
             } else {
-                // 回复的不是根级评论，根的评论也要+1
+                // 回复的是二级评论。根的评论也要+1
                 comment.setRootId(rootId);
+                comment.setReplyToReplyId(commentAddDto.getCid());
                 commentMapper.replyPlus(rootId, 1);
             }
 

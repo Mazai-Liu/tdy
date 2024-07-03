@@ -36,8 +36,9 @@ public class Comment {
 
     private Integer isDelete = 0;
 
+    // 被回复的二级评论 的id。为0则说明是一级评论，或回复一级评论的评论
+    private Integer replyToReplyId = 0;
     private Integer replyToUserid;
-    private Integer replyToCid;
     private String replyToUsername;
 
     private LocalDateTime createTime;
