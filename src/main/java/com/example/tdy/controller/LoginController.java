@@ -52,7 +52,7 @@ public class LoginController {
 
 
     @PostMapping("")
-    public R<Map<String, String>> register(@RequestBody @Validated LoginDto registerDto) throws LoginException {
+    public R<Map<String, String>> login(@RequestBody @Validated LoginDto registerDto) throws LoginException {
         Map<String, String> data = loginService.login(registerDto);
 
         return R.ok(data);

@@ -85,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
     private void buildReplies(Integer videoId, Comment comment) {
         Integer rootId = comment.getId();
 
-        comment.setReplies(commentMapper.selectByDto(new CommentListDto(videoId, rootId, 0, 2)));
+        comment.setReplies(commentMapper.selectByDto(new CommentListDto(videoId, rootId, 0, 10)));
 
         comment.getReplies().forEach(reply -> {
             reply.setUserVO(userService.getUserVoById(3));
@@ -105,10 +105,10 @@ public class CommentServiceImpl implements CommentService {
 //        }
 
         // 自己评论自己
-        Integer replyToId = commentAddDto.getReplyToUserid();
-        if(replyToId != null && replyToId.intValue() == commentUserid) {
-            throw new BaseException(SystemConstant.COMMENT_SELF);
-        }
+//        Integer commentedUserId = commentAddDto.getReplyToUserid();
+//        if(commentedUserId != null && commentAddDto.getRootId() != 0 && commentedUserId.equals(commentUserid)) {
+//            throw new BaseException(SystemConstant.COMMENT_SELF);
+//        }
     }
 
     @Transactional
@@ -121,21 +121,54 @@ public class CommentServiceImpl implements CommentService {
 
         // 如果是 回复某评论 而不是 回复视频，则设置parentId?
         Integer replyToReplyId = comment.getReplyToReplyId();
-        if(replyToReplyId == 0) {
-            // 回复评论，设置parent，回复数+1
-            comment.setParentId(replyToReplyId);
-            commentMapper.replyPlus(replyToReplyId, 1);
+//        if(replyToReplyId == 0) {
+//            // 回复评论，设置parent，回复数+1
+//            comment.setParentId(replyToReplyId);
+//            commentMapper.replyPlus(replyToReplyId, 1);
+//
+//            // 回复的是根级评论，即rootId是0。
+//            Integer rootId = comment.getRootId();
+//            if(rootId == 0) {
+//                comment.setRootId(commentAddDto.getCid());
+//            } else {
+//                // 回复的是二级评论。根的评论也要+1
+//                comment.setRootId(rootId);
+//                comment.setReplyToReplyId(commentAddDto.getCid());
+//                commentMapper.replyPlus(rootId, 1);
+//            }
+//        }
 
-            // 回复的是根级评论，即rootId是0。
-            Integer rootId = comment.getRootId();
-            if(rootId == 0) {
-                comment.setRootId(replyToReplyId);
-            } else {
-                // 回复的是二级评论。根的评论也要+1
-                comment.setRootId(rootId);
-                comment.setReplyToReplyId(commentAddDto.getCid());
-                commentMapper.replyPlus(rootId, 1);
+        Integer toCommentedCid = commentAddDto.getCid();
+        Integer toCommentedUserId = commentAddDto.getReplyToUserid();
+        comment.setParentId(toCommentedCid);
+
+        Integer rootId = comment.getRootId();
+        // root为0两种情况：
+        // 1. 回复视频
+        // 2. 回复一级评论
+        if(rootId == 0) {
+            // 情况1
+            if(toCommentedUserId == null) {
+
             }
+            // 情况2
+            else {
+                // 设置新评论的rootId为一级评论的Id
+                comment.setRootId(toCommentedCid);
+                // 根的回复数+1
+                commentMapper.replyPlus(toCommentedCid, 1);
+            }
+        }
+        // rootId不为0。说明回复的是二级评论
+        else {
+            // 该条评论的回复数+1
+            commentMapper.replyPlus(toCommentedCid, 1);
+            // 根的回复数+1
+            commentMapper.replyPlus(rootId, 1);
+            // 设置新评论的rootId为老的
+            comment.setRootId(rootId);
+
+            comment.setReplyToReplyId(toCommentedCid);
 
         }
 
