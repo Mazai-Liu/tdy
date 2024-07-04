@@ -21,6 +21,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {BaseException.class, ConstraintViolationException.class})
     public R globalException(BaseException e) {
         logger.error("{}", e);
+
+        System.out.println(e);
+
         return R.error(e.getMessage());
     }
 
