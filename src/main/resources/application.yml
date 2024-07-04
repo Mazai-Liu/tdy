@@ -40,3 +40,4 @@ coze:
   secret-key: ${coze.secret-key}
   avatar-bot-id: ${coze.bot-id}
   reply-bot-id: ${coze.reply-bot-id}
+
