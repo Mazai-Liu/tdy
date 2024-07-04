@@ -13,12 +13,15 @@ import com.example.tdy.mapper.VideoMapper;
 import com.example.tdy.result.PageResult;
 import com.example.tdy.service.CommentService;
 import com.example.tdy.service.UserService;
+import com.example.tdy.utils.CozeUtil;
+import com.example.tdy.utils.ThreadPoolUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -43,7 +46,10 @@ public class CommentServiceImpl implements CommentService {
     private UserService userService;
 
     @Autowired
-    private CozeServiceImpl cozeServiceimpl;
+    private ThreadPoolUtil threadPoolUtil;
+
+    @Autowired
+    private CozeUtil cozeUtil;
 
 
     public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -180,10 +186,33 @@ public class CommentServiceImpl implements CommentService {
         // 触发 bot 回复
         if(isNeedBot(comment)) {
             logger.info("触发 bot 回复");
-            cozeServiceimpl.botReply(comment);
+            botReply(comment);
         }
         else
             logger.info("未触发 bot 回复");
+    }
+
+
+    public void botReply(Comment comment) throws BaseException {
+        threadPoolUtil.submit(() -> {
+            CommentAddDto commentAddDto = new CommentAddDto();
+            BeanUtils.copyProperties(comment, commentAddDto);
+
+            commentAddDto.setUserId(3);
+
+            commentAddDto.setContent(cozeUtil.getBotReply(comment));
+
+            commentAddDto.setCid(comment.getId());
+            commentAddDto.setReplyToUserid(comment.getUserId());
+            commentAddDto.setReplyToUsername(userService.getUserVoById(comment.getUserId()).getNickname());
+
+            try {
+                logger.info("开始添加评论");
+                add(commentAddDto);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private boolean isNeedBot(Comment comment) {
