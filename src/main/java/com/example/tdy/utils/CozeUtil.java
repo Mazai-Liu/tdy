@@ -54,7 +54,6 @@ public class CozeUtil {
 
         return answer.getContent();
     }
-
     public String getBotReply(Comment comment) {
         Video video = videoService.getVideoById(comment.getVideoId());
         String videoTitle = video.getTitle();

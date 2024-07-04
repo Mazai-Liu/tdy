@@ -15,11 +15,8 @@
             </if>
 
         </where>
-        <if test="offset != null">
-            limit #{offset}
-        </if>
         <if test="offset != null and count != null">
-            , #{count}
+            limit #{offset} , #{count}
         </if>
     </select>
 </mapper>

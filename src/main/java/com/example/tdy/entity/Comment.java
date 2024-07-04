@@ -24,6 +24,7 @@ public class Comment {
     // 还有几条回复
     private Integer more;
     private Integer isTop = 0;
+    private Integer replicable = 1;
 
     private String content;
     private UserVO userVO;
