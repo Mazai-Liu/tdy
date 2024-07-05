@@ -5,6 +5,8 @@ import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.constant.SystemConstant;
 import com.example.tdy.context.BaseContext;
 import com.example.tdy.exception.BaseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 @ConditionalOnProperty(value = "tdy.limit-strategy", havingValue = "slid", matchIfMissing = true)
 public class SlidWinStrategy implements AccessLimitStrategy {
+
+    Logger logger = LoggerFactory.getLogger(SlidWinStrategy.class);
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -38,7 +42,7 @@ public class SlidWinStrategy implements AccessLimitStrategy {
 
         stringRedisTemplate.opsForZSet().removeRangeByScore(key, 0, currentTimeMillis - timeMill);
         Long size = stringRedisTemplate.opsForZSet().size(key);
-        System.out.println("当前窗口内请求数: " + size);
+        logger.info("当前用户: " + userId + ", 窗口内请求数: " + size);
         if (size != null && count < size) {
             throw new BaseException(SystemConstant.VISITOR_LIMIT);
         }
