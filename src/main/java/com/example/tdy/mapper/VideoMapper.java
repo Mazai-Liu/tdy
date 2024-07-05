@@ -37,6 +37,8 @@ public interface VideoMapper {
             " limit #{start}, #{count}")
     List<Video> selectPatch(@Param("start") int start, @Param("count") int count);
 
+
     @Update("update video set comments = comments + 1 where id = #{videoId}")
     void plusComments(Integer videoId);
+
 }
