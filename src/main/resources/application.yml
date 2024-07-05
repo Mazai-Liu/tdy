@@ -36,6 +36,7 @@ qiniu:
   bucket-name: ${qiniu.bucket-name}
 tdy:
   feed-strategy: ${tdy.feed-strategy}
+  limit-strategy: ${tdy.limit-strategy}
 coze:
   secret-key: ${coze.secret-key}
   avatar-bot-id: ${coze.bot-id}

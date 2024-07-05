@@ -1,4 +1,4 @@
-package com.example.tdy.service.strategy;
+package com.example.tdy.service.strategy.feed;
 
 import com.example.tdy.entity.Video;
 import com.example.tdy.service.FollowService;
@@ -15,7 +15,7 @@ import java.util.List;
  * @time 2024/6/11
  */
 @Component
-@ConditionalOnProperty(value = "tdy.feed-strategy", havingValue = "push")
+@ConditionalOnProperty(value = "tdy.feed-strategy", havingValue = "push", matchIfMissing = true)
 public class PushStrategy implements FeedStrategy {
 
     @Autowired

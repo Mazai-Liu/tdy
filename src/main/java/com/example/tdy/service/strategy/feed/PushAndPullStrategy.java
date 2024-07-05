@@ -1,4 +1,4 @@
-package com.example.tdy.service.strategy;
+package com.example.tdy.service.strategy.feed;
 
 import com.example.tdy.entity.Video;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

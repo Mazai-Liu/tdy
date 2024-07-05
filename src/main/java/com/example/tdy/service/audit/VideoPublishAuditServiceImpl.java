@@ -8,10 +8,7 @@ import com.example.tdy.entity.audit.VideoAudit;
 import com.example.tdy.entity.task.VideoTask;
 import com.example.tdy.enums.ContentType;
 import com.example.tdy.mapper.VideoMapper;
-import com.example.tdy.service.FileService;
-import com.example.tdy.service.impl.VideoServiceImpl;
-import com.example.tdy.service.strategy.FeedStrategy;
-import com.example.tdy.utils.QiniuUtil;
+import com.example.tdy.service.strategy.feed.FeedStrategy;
 import com.example.tdy.utils.RedisUtil;
 import com.example.tdy.utils.ThreadPoolUtil;
 import com.qiniu.common.QiniuException;
@@ -19,12 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mazai-Liu
