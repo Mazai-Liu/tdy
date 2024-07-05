@@ -2,7 +2,7 @@ package com.example.tdy.service.impl;
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.service.FeedService;
 
-import com.example.tdy.service.strategy.FeedStrategy;
+import com.example.tdy.service.strategy.feed.FeedStrategy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;

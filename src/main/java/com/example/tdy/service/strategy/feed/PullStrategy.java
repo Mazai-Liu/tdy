@@ -1,4 +1,4 @@
-package com.example.tdy.service.strategy;
+package com.example.tdy.service.strategy.feed;
 
 import com.example.tdy.constant.RedisConstant;
 import com.example.tdy.entity.Video;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Mazai-Liu
