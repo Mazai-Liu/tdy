@@ -1,19 +1,16 @@
-package com.example.tdy.entity.audit;
+package com.example.tdy.service.audit.entity;
 
 
 import com.example.tdy.entity.Video;
 import com.example.tdy.enums.AuditStatus;
 import com.example.tdy.enums.ContentType;
 import com.example.tdy.service.FileService;
-import com.example.tdy.service.audit.VideoPublishAuditServiceImpl;
 import com.example.tdy.utils.QiniuUtil;
 import com.qiniu.common.QiniuException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Mazai-Liu

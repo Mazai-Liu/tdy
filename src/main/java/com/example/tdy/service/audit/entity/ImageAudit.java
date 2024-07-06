@@ -1,12 +1,8 @@
-package com.example.tdy.entity.audit;
+package com.example.tdy.service.audit.entity;
 
 
 import com.example.tdy.entity.Video;
 import com.example.tdy.enums.AuditStatus;
-import com.example.tdy.enums.ContentType;
-import com.example.tdy.utils.QiniuUtil;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,8 +10,7 @@ import org.springframework.stereotype.Component;
  * @time 2024/5/7
  */
 @Component
-public class TextAudit extends AbstractAudit {
-
+public class ImageAudit extends AbstractAudit {
     @Override
     public AuditResult doAudit(Video video) {
         return new AuditResult("成功", AuditStatus.PASS);

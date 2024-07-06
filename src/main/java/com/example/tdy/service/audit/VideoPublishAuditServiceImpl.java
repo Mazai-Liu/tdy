@@ -1,10 +1,10 @@
 package com.example.tdy.service.audit;
 
 import com.example.tdy.entity.Video;
-import com.example.tdy.entity.audit.AbstractAudit;
-import com.example.tdy.entity.audit.ImageAudit;
-import com.example.tdy.entity.audit.TextAudit;
-import com.example.tdy.entity.audit.VideoAudit;
+import com.example.tdy.service.audit.entity.AbstractAudit;
+import com.example.tdy.service.audit.entity.ImageAudit;
+import com.example.tdy.service.audit.entity.TextAudit;
+import com.example.tdy.service.audit.entity.VideoAudit;
 import com.example.tdy.entity.task.VideoTask;
 import com.example.tdy.enums.ContentType;
 import com.example.tdy.mapper.VideoMapper;

@@ -1,4 +1,4 @@
-package com.example.tdy.entity.audit;
+package com.example.tdy.service.audit.entity;
 
 import com.example.tdy.enums.AuditStatus;
 

@@ -20,10 +20,8 @@ public class GlobalExceptionHandler {
     Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     @ExceptionHandler(value = {BaseException.class, ConstraintViolationException.class})
     public R globalException(BaseException e) {
-        logger.error("{}", e);
-
-        System.out.println(e);
-
+        logger.error("{}", e.getMessage());
+        e.printStackTrace();
         return R.error(e.getMessage());
     }
 

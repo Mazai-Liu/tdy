@@ -114,6 +114,7 @@ public class LoginController {
         // 发送邮件
         int random = (int) ((Math.random()*9+1) * 100000);
         String code = String.valueOf(random);
+        logger.info("邮箱验证码: {}", code);
         emailService.sendMessage(emailDto.getEmail(), code);
 
         stringRedisTemplate.opsForValue().set(key, code, RedisConstant.MAIL_TIMEOUT, TimeUnit.MINUTES);
