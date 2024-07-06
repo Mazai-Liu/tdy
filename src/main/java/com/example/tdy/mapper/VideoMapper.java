@@ -48,4 +48,6 @@ public interface VideoMapper {
             "limit #{offset},#{limit}")
     List<Video> getSearchVideo(@Param("searchName") String searchName, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
+    @Update("update video set shares = shares + 1 where id = #{vid}")
+    void share(Integer vid);
 }

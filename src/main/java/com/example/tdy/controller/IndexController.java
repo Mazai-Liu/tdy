@@ -36,6 +36,13 @@ public class IndexController {
     @Autowired
     private TypeService typeService;
 
+    @PostMapping("/share/{videoId}")
+    public R share(@PathVariable Integer videoId) {
+        videoService.share(videoId);
+
+        return R.ok();
+    }
+
     @GetMapping("/video/user")
     public R<PageResult<Video>> getVideoByUserId(@NotNull Integer userId, BasePage basePage) {
         PageResult<Video> pageResult = videoService.getVideoByUserId(userId, basePage);

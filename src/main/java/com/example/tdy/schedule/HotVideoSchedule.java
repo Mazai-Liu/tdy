@@ -54,7 +54,7 @@ public class HotVideoSchedule {
 
 
     @Scheduled(cron = "0 0 0/3 * * ? ")
-    public void hotVideoRank() {
+    public void hotVideo() {
         logger.info("定时任务， 获取热门视频");
         // 每隔三小时获取库中视频计算热度值 = 半衰期公式，放入redis的热门视频以及热门视频排序中
 

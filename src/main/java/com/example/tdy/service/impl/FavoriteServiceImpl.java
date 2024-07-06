@@ -1,11 +1,14 @@
 package com.example.tdy.service.impl;
 
+import com.example.tdy.constant.RedisConstant;
+import com.example.tdy.constant.SystemConstant;
 import com.example.tdy.context.BaseContext;
 import com.example.tdy.dto.UpdateFavoriteDto;
 import com.example.tdy.entity.Favorite;
 import com.example.tdy.entity.FavoriteVideo;
 import com.example.tdy.mapper.FavoriteMapper;
 import com.example.tdy.service.FavoriteService;
+import com.example.tdy.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,9 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Autowired
     private FavoriteMapper favoriteMapper;
+
+    @Autowired
+    private InterestPushServiceImpl interestPushService;
 
     @Override
     public List<Favorite> getFavoritesByUserId() {
@@ -65,6 +71,10 @@ public class FavoriteServiceImpl implements FavoriteService {
         record.setCreateTime(LocalDateTime.now());
         record.setUpdateTime(LocalDateTime.now());
         favoriteMapper.insertFavoriteVideo(record);
+
+        // 更新用户模型
+        String key = RedisConstant.USER_MODEL + BaseContext.getCurrentId();
+        interestPushService.updateModel(key, vid, SystemConstant.FAVORITE_PLUS_MODEL);
     }
 
     @Override
