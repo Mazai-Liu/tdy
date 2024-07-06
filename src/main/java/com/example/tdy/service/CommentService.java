@@ -19,4 +19,6 @@ public interface CommentService {
     void add(CommentAddDto commentAddDto) throws BaseException;
 
     void delete(CommentDelDto commentDelDto);
+
+    void like(Integer commentId);
 }
