@@ -373,7 +373,18 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public PageResult<Video> getSearchVideo(String searchName,Integer page,Integer limit) {
-        PageResult<Video> pageResult = fileService.getSearchVideo(searchName,page,limit);
+
+        PageResult<Video> pageResult = new PageResult<>();
+        List<Video> videoList = videoMapper.getSearchVideo(searchName,(page-1)*limit,limit);
+        pageResult.setRecords(videoList);
+        pageResult.setTotal(videoList.size());
+
+        Integer currentId = BaseContext.getCurrentId();
+
+        // 放入搜索记录
+        stringRedisTemplate.opsForZSet().add(RedisConstant.SEARCH_HISTORY + currentId, searchName, System.currentTimeMillis());
+
+
         return pageResult;
     }
 
@@ -408,6 +419,14 @@ public class VideoServiceImpl implements VideoService {
         Video video = videoMapper.selectById(videoId);
         video.setUser(userService.getUserVoById(video.getUserId()));
         return video;
+    }
+
+    @Override
+    public List<String> getSearchHistory() {
+        Integer currentId = BaseContext.getCurrentId();
+        Set<String> strings = stringRedisTemplate.opsForZSet().reverseRange(RedisConstant.SEARCH_HISTORY + currentId, 0, -1);
+
+        return new ArrayList<>(strings);
     }
 
 

@@ -65,4 +65,5 @@ public interface VideoService {
 
     Video getVideoById(Integer videoId);
 
+    List<String> getSearchHistory();
 }

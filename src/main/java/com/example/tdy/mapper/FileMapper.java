@@ -19,6 +19,5 @@ public interface FileMapper {
 
     @Select("select * from file where id = #{fileId}")
     File selectById(Integer fileId);
-    @Select("select * from video where title like ${searchName} or description like ${searchName} or label like ${searchName} limit #{offset},#{limit}")
-    List<Video> getSearchVideo(@Param("searchName") String searchName, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
 }

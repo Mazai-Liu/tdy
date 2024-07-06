@@ -105,14 +105,6 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    @Override
-    public PageResult<Video> getSearchVideo(String searchName ,Integer page,Integer limit) {
-       PageResult<Video> pageResult = new PageResult<>();
-       List<Video> videoList = fileMapper.getSearchVideo(searchName,(page-1)*limit,limit);
-       pageResult.setRecords(videoList);
-       pageResult.setTotal(videoList.size());
-       return pageResult;
-    }
 
     public String generateFileKey(String key) {
 //        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;

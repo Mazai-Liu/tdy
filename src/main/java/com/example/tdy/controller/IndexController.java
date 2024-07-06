@@ -78,6 +78,13 @@ public class IndexController {
         PageResult<Video> videos = videoService.getSearchVideo(searchName,page,limit);
         return R.ok(videos);
     }
+
+    @GetMapping("/search/history")
+    public R<List<String>> searchHistory(){
+        List<String> history = videoService.getSearchHistory();
+        return R.ok(history);
+    }
+
     @GetMapping("/video/type/{typeId}")
     public R<PageResult<Video>> type(@PathVariable("typeId") @NotNull Integer typeId,@RequestParam("page")Integer page,@RequestParam("limit")Integer limit){
         PageResult<Video> pageResult =  videoService.getTypeVideo(typeId,page,limit);
