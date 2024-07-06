@@ -31,4 +31,7 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{userId}")
     User selectByUserId(Integer userId);
+
+    @Update("update user set avatar = #{fileId} where id = #{userId}")
+    void setAvatarFileId(@Param("fileId") Integer fileId, @Param("userId") Integer userId);
 }

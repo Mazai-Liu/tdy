@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mazai-Liu
@@ -21,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/comment")
+@Validated
 public class CommentController {
 
     @Autowired
@@ -42,6 +45,12 @@ public class CommentController {
     @PostMapping("/delete")
     public R delete(@RequestBody @Validated CommentDelDto commentDelDto) throws BaseException {
         commentService.delete(commentDelDto);
+        return R.ok();
+    }
+
+    @PostMapping("/like")
+    public R like(@RequestBody Map<String, Integer> param) throws BaseException {
+        commentService.like(param.get("commentId"));
         return R.ok();
     }
 }

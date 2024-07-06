@@ -231,6 +231,13 @@ public class CommentServiceImpl implements CommentService {
         commentMapper.delete(commentDelDto.getCid());
     }
 
+    @Override
+    public void like(Integer commentId) {
+        if(commentId != null) {
+            commentMapper.like(commentId);
+        }
+    }
+
     public Comment getById(Integer cid) {
         return commentMapper.selectById(cid);
     }

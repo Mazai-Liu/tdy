@@ -53,4 +53,6 @@ public class RedisConstant {
 
     public static final String ACCESS_LIMIT_FIXWIN = "access:limit-fix-win:";
     public static final String ACCESS_LIMIT_SLIDWIN = "access:limit-slid-win:";
+    public static final String SEARCH_HISTORY = "search_history:";
+
 }

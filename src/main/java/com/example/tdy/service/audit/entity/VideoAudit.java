@@ -1,32 +1,19 @@
-package com.example.tdy.entity.audit;
+package com.example.tdy.service.audit.entity;
 
 
 import com.example.tdy.entity.Video;
 import com.example.tdy.entity.resp.audit.BodyJson;
-import com.example.tdy.entity.resp.audit.CutsJson;
 import com.example.tdy.entity.resp.audit.ScenesJson;
 import com.example.tdy.entity.resp.audit.ScoreJson;
 import com.example.tdy.enums.AuditStatus;
-import com.example.tdy.enums.ContentType;
-import com.example.tdy.service.impl.VideoServiceImpl;
-import com.example.tdy.utils.QiniuUtil;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Client;
-import com.qiniu.http.Response;
-import com.qiniu.storage.Configuration;
-import com.qiniu.storage.Region;
 import com.qiniu.util.Auth;
-import com.qiniu.util.StringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -57,17 +57,23 @@ public class RedisUtil {
     }
 
     public List<Object> sRandom(List<String> keys){
+        Random random = new Random();
         final List<Object> list = stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
             for (String key : keys) {
-                connection.sRandMember(key.getBytes());
+                connection.sRandMember(key.getBytes(), 1 + random.nextInt(4));
             }
             return null;
         });
         // 可能会有null
-        final List result = new ArrayList();
+        final List<Object> result = new ArrayList<>();
         for (Object aLong : list) {
-            if (aLong!=null){
-                result.add(aLong);
+
+            if (aLong != null){
+//                if(((String) aLong).startsWith("["))
+//                    aLong = ((String) aLong).substring(1, ((String) aLong).length() - 1);
+//                result.add(Arrays.asList(((String) aLong).split(",")));
+                result.addAll(((ArrayList) aLong));
+
             }
         }
         return result;

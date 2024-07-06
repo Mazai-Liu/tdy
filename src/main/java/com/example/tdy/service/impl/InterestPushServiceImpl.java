@@ -1,6 +1,7 @@
 package com.example.tdy.service.impl;
 
 import com.example.tdy.constant.RedisConstant;
+import com.example.tdy.constant.SystemConstant;
 import com.example.tdy.context.BaseContext;
 import com.example.tdy.dto.UerModelDTO;
 import com.example.tdy.entity.User;
@@ -142,7 +143,7 @@ public class InterestPushServiceImpl implements InterestPushService {
         Set<Integer> videoIds = new HashSet<>();
 
         if (!ObjectUtils.isEmpty(list)){
-            videoIds = list.stream().filter(id ->!ObjectUtils.isEmpty(id)).map(id -> Integer.valueOf(id.toString())).collect(Collectors.toSet());
+            videoIds = list.stream().map(id -> Integer.valueOf(id.toString())).collect(Collectors.toSet());
         }
         return videoIds;
     }
@@ -152,14 +153,20 @@ public class InterestPushServiceImpl implements InterestPushService {
         Integer currentId = BaseContext.getCurrentId();
 
         Integer videoId = userModelDto.getId();
+
+
+        String key = RedisConstant.USER_MODEL + currentId;
+        Double score = userModelDto.getScore();
+
+        updateModel(key, videoId, score);
+    }
+
+    public void updateModel(String key, Integer videoId, Double score) {
         Video video = videoMapper.selectById(videoId);
         List<String> labels = video.buildLabel();
 
-        String key = RedisConstant.USER_MODEL + currentId;
-
         // key为label，value为分数
         Map<Object, Object> modelMap = stringRedisTemplate.opsForHash().entries(key);
-        Double score = userModelDto.getScore();
 
         labels.forEach(label -> {
             if(modelMap.containsKey(label)) {
@@ -172,7 +179,7 @@ public class InterestPushServiceImpl implements InterestPushService {
 
 
     public Integer randomVideoId(Integer sex) {
-        String key = RedisConstant.SYSTEM_STOCK + (sex == 1 ? "美女" : "宠物");
+        String key = RedisConstant.SYSTEM_STOCK + (sex == 1 ? SystemConstant.MAN_LABEL : SystemConstant.WOMAN_LABEL);
         final Object o = stringRedisTemplate.opsForSet().randomMember(key);
         return o == null ? null : Integer.parseInt(o.toString());
     }

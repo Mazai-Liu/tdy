@@ -59,9 +59,9 @@ public class LoginServiceImpl implements LoginService {
     @Transactional
     public void register(RegisterDto registerDto) throws RegisterException {
         // 判断邮箱重复
-        if (userMapper.selectByEmail(registerDto.getEmail()) != null) {
-            throw new RegisterException(ExceptionConstant.EMAIL_EXIST);
-        }
+//        if (userMapper.selectByEmail(registerDto.getEmail()) != null) {
+//            throw new RegisterException(ExceptionConstant.EMAIL_EXIST);
+//        }
 
         User user = new User();
         user.setEmail(registerDto.getEmail());
@@ -70,8 +70,9 @@ public class LoginServiceImpl implements LoginService {
         user.setDescription(SystemConstant.DEFAULT_DESCRIPTION);
         user.setState(SystemConstant.USER_NORMAL);
         user.setAvatar(SystemConstant.DEFAULT_AVATAR);
-        getAvatarFileId(user);
+
         userMapper.insert(user);
+        getAvatarFileId(user);
 
         Favorite favorite = new Favorite();
         favorite.setName(SystemConstant.DEFAULT_FAVORITE_NAME);
@@ -125,11 +126,13 @@ public class LoginServiceImpl implements LoginService {
             file.setFileKey(avatar_path);
             file.setFormat("png");
             file.setType("图片");
-            file.setUserId(BaseContext.getCurrentId());
+            file.setUserId(user.getId());
 
             fileMapper.insert(file);
 
-            user.setAvatar(file.getId());
+            logger.info("user: {}", user);
+            userMapper.setAvatarFileId(file.getId(), user.getId());
+            logger.info("设置生成头像成功：{}", user);
         });
 
     }

@@ -18,6 +18,13 @@ public class SystemConstant {
 
     public static final String VISITOR_LIMIT = "访问过于频繁";
 
+
+    public static final Double FAVORITE_PLUS_MODEL = 10d;
+    public static final Double LIKE_PLUS_MODEL = 5d;
+    public static final String MAN_LABEL = "美女";
+    public static final String WOMAN_LABEL = "萌宠";
+    public static final Double SHARE_PLUS_MODEL = 15d;
+
     public static String DEFAULT_FAVORITE_DESCRIPTION = "暂无描述";
 
     public static final String OK_LIKE = "点赞成功";

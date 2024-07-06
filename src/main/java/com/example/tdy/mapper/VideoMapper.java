@@ -41,4 +41,13 @@ public interface VideoMapper {
     @Update("update video set comments = comments + 1 where id = #{videoId}")
     void plusComments(Integer videoId);
 
+    @Select("select * from video " +
+            "where title like concat('%'',${searchName}, ''%') " +
+            "or description like concat('%'',${searchName}, ''%') " +
+            "or label like concat('%'',${searchName}, ''%') " +
+            "limit #{offset},#{limit}")
+    List<Video> getSearchVideo(@Param("searchName") String searchName, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    @Update("update video set shares = shares + 1 where id = #{vid}")
+    void share(Integer vid);
 }

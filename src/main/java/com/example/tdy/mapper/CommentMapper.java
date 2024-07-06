@@ -27,4 +27,7 @@ public interface CommentMapper {
 
     @Select("select * from comment where id = #{cid}")
     Comment selectById(Integer cid);
+
+    @Update("update comment set likes = likes + 1 where id = #{cid}")
+    void like(Integer cid);
 }

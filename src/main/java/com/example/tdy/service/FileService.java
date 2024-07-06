@@ -24,5 +24,4 @@ public interface FileService {
 
     String getRealUrl(Integer fileId);
 
-    PageResult<Video> getSearchVideo(String searchName,Integer page,Integer limit);
 }
