@@ -175,13 +175,7 @@ public class VideoAudit extends AbstractAudit {
 
     }
 
-    private String post(Client client, String url, byte[] body) throws QiniuException {
-        Auth auth = qiniuUtil.getAuth();
-        com.qiniu.http.Response resp = client.post(url, body, auth.authorizationV2(url, "POST", body, "application/json"), Client.JsonMime);
 
-        return resp.bodyString();
-
-    }
 }
 
 //class ResourcesCensor {
