@@ -23,4 +23,6 @@ public interface FavoriteService {
     void addFavoriteVideo(Integer fid,Integer vid);
 
     void cancelFavoriteVideo(Integer fid, Integer vid);
+
+    Favorite add(Integer id, String defaultFavoriteName, String defaultFavoriteDescription);
 }

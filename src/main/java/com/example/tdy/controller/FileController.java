@@ -77,7 +77,7 @@ public class FileController {
      * @throws IOException
      */
     @GetMapping("/{fileId}")
-    @AccessLimit(count = 20, time = 60)
+    @AccessLimit(count = 20, time = 60, method = "getFileUrl")
     public void getFileUrl(@PathVariable @NotNull Integer fileId, HttpServletResponse response) throws Exception {
         File file = fileService.getFileById(fileId);
 

@@ -24,7 +24,7 @@ public interface UserMapper {
 
     List<User> selectByUser(User user);
 
-    @Update("update user set default_favorite = #{defaultFavorite}")
+    @Update("update user set default_favorite = #{defaultFavorite} where id = #{id}")
     void setDefaultFavorite(User user);
 
     List<User> selectByUserIds(@Param("ids") List<Integer> userIds);

@@ -30,7 +30,8 @@ public class FixWinStrategy implements AccessLimitStrategy{
 
     public void doLimit(AccessLimit accessLimit) throws BaseException {
         Integer userId = BaseContext.getCurrentId();
-        String key = RedisConstant.ACCESS_LIMIT_FIXWIN + userId;
+        String method = accessLimit.method();
+        String key = RedisConstant.ACCESS_LIMIT_SLIDWIN + method + ":" + userId;
 
         int count = accessLimit.count();
         TimeUnit timeUnit = accessLimit.timeUnit();

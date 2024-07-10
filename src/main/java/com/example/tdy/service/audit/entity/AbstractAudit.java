@@ -7,6 +7,8 @@ import com.example.tdy.enums.ContentType;
 import com.example.tdy.service.FileService;
 import com.example.tdy.utils.QiniuUtil;
 import com.qiniu.common.QiniuException;
+import com.qiniu.http.Client;
+import com.qiniu.util.Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,15 @@ public abstract class AbstractAudit{
     }
 
     public abstract AuditResult doAudit(Video video) throws QiniuException;
+
+
+    protected String post(Client client, String url, byte[] body) throws QiniuException {
+        Auth auth = qiniuUtil.getAuth();
+        com.qiniu.http.Response resp = client.post(url, body, auth.authorizationV2(url, "POST", body, "application/json"), Client.JsonMime);
+
+        return resp.bodyString();
+
+    }
 
     public static class Builder {
         public AbstractAudit head;

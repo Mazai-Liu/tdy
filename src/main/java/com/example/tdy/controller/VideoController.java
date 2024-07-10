@@ -1,5 +1,6 @@
 package com.example.tdy.controller;
 
+import com.example.tdy.annotation.AccessLimit;
 import com.example.tdy.constant.SystemConstant;
 import com.example.tdy.constant.VideoConstant;
 import com.example.tdy.context.BaseContext;
@@ -32,6 +33,7 @@ public class VideoController {
     private VideoService videoService;
 
     @PostMapping("")
+    @AccessLimit(count = 1, time = 60, method = "uploadVideo")
     public R uploadVideo(@NotNull @RequestBody Video video) throws BaseException {
         videoService.uploadVideo(video);
         return R.ok(VideoConstant.WAIT_AUDIT);
@@ -56,7 +58,7 @@ public class VideoController {
         return R.okWithMessage(SystemConstant.CANCEL_FAVORITE);
     }
 
-    @GetMapping("/favorite/{fid}")
+    @GetMapping("/favorites/{fid}")
     public R<List<Video>> getFavorite(@NotNull @PathVariable Integer fid) {
         List<Video> videos = videoService.getByFavoriteId(fid);
         return R.ok(videos);

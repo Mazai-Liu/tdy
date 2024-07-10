@@ -5,28 +5,28 @@
         update favorite
         <set>
             <if test="name != null">
-                name = #{name}
+                name = #{name},
             </if>
             <if test="size != null">
-                size = #{size}
+                size = #{size},
             </if>
             <if test="open != null">
-                open = #{open}
+                open = #{open},
             </if>
             <if test="userId != null">
-                user_id = #{userId}
+                user_id = #{userId},
             </if>
             <if test="description != null">
-                description = #{description}
+                description = #{description},
             </if>
             <if test="state != null">
-                state = #{state}
+                state = #{state},
             </if>
             <if test="createTime != null">
-                create_time = #{createTime}
+                create_time = #{createTime},
             </if>
             <if test="updateTime != null">
-                update_time = #{update}
+                update_time = #{update},
             </if>
         </set>
         where id = #{id}
