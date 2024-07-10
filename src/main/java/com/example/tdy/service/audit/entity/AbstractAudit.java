@@ -63,6 +63,7 @@ public abstract class AbstractAudit{
 
     public abstract AuditResult doAudit(Video video) throws QiniuException;
 
+
     protected String post(Client client, String url, byte[] body) throws QiniuException {
         Auth auth = qiniuUtil.getAuth();
         com.qiniu.http.Response resp = client.post(url, body, auth.authorizationV2(url, "POST", body, "application/json"), Client.JsonMime);

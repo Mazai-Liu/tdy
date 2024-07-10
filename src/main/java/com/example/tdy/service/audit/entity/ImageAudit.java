@@ -1,6 +1,5 @@
 package com.example.tdy.service.audit.entity;
 
-
 import com.alibaba.fastjson.JSON;
 import com.example.tdy.entity.Video;
 import com.example.tdy.entity.resp.audit.ResultJson;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ImageAudit extends AbstractAudit {
+
     public static Logger logger = LoggerFactory.getLogger(ImageAudit.class);
     public static final String AUDIT_API_URL = "http://ai.qiniuapi.com/v3/image/censor";
 

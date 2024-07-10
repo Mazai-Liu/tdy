@@ -174,8 +174,6 @@ public class VideoAudit extends AbstractAudit {
         return null;
 
     }
-
-
 }
 
 //class ResourcesCensor {
