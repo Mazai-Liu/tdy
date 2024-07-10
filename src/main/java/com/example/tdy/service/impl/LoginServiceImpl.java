@@ -14,6 +14,7 @@ import com.example.tdy.exception.RegisterException;
 import com.example.tdy.mapper.FavoriteMapper;
 import com.example.tdy.mapper.FileMapper;
 import com.example.tdy.mapper.UserMapper;
+import com.example.tdy.service.FavoriteService;
 import com.example.tdy.service.LoginService;
 import com.example.tdy.utils.CozeUtil;
 import com.example.tdy.utils.JwtUtil;
@@ -42,6 +43,8 @@ public class LoginServiceImpl implements LoginService {
     private UserMapper userMapper;
     @Autowired
     private FavoriteMapper favoriteMapper;
+
+    private FavoriteService favoriteService;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -74,13 +77,9 @@ public class LoginServiceImpl implements LoginService {
         userMapper.insert(user);
         getAvatarFileId(user);
 
-        Favorite favorite = new Favorite();
-        favorite.setName(SystemConstant.DEFAULT_FAVORITE_NAME);
-        favorite.setOpen(SystemConstant.FAVORITE_PUBLIC);
-        favorite.setUserId(user.getId());
-        favorite.setSize(0);
-        favorite.setDescription(SystemConstant.DEFAULT_FAVORITE_DESCRIPTION);
-        favoriteMapper.insert(favorite);
+
+        Favorite favorite = favoriteService.add(user.getId(), SystemConstant.DEFAULT_FAVORITE_NAME, SystemConstant.DEFAULT_FAVORITE_DESCRIPTION);
+
 
         logger.info("用户注册成功：{}", user);
 

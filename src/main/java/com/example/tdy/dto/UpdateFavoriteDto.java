@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class UpdateFavoriteDto {
-    @NotNull
-    private Long id;
+
+    private Integer id;
     @NotBlank
     private String name;
     @NotBlank

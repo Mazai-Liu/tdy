@@ -9,31 +9,31 @@
         update user
         <set>
             <if test="email != null">
-                email = #{email}
+                email = #{email},
             </if>
             <if test="phone != null">
-                phone = #{phone}
+                phone = #{phone},
             </if>
             <if test="password != null">
-                password = #{password}
+                password = #{password},
             </if>
             <if test="avatar != null">
-                avatar = #{avatar}
+                avatar = #{avatar},
             </if>
             <if test="gender != null">
-                gender = #{gender}
+                gender = #{gender},
             </if>
             <if test="nickname != null">
-                nickname = #{nickname}
+                nickname = #{nickname},
             </if>
             <if test="description != null">
-                description = #{description}
+                description = #{description},
             </if>
             <if test="state != null">
-                state = #{state}
+                state = #{state},
             </if>
             <if test="defaultFavorite != null">
-                default_favorite = #{defaultFavorite}
+                default_favorite = #{defaultFavorite},
             </if>
         </set>
         where id = #{id}

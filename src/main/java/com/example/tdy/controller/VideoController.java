@@ -58,7 +58,7 @@ public class VideoController {
         return R.okWithMessage(SystemConstant.CANCEL_FAVORITE);
     }
 
-    @GetMapping("/favorite/{fid}")
+    @GetMapping("/favorites/{fid}")
     public R<List<Video>> getFavorite(@NotNull @PathVariable Integer fid) {
         List<Video> videos = videoService.getByFavoriteId(fid);
         return R.ok(videos);

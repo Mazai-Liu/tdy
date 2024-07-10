@@ -45,8 +45,16 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public void updateById(UpdateFavoriteDto updateFavoriteDto) {
         Favorite favorite = new Favorite();
-        BeanUtils.copyProperties(updateFavoriteDto, favorite);
-        favoriteMapper.update(favorite);
+        Integer id = updateFavoriteDto.getId();
+        Integer currentIt = BaseContext.getCurrentId();
+        if(id == null) {
+            // 新增
+            add(currentIt);
+        } else {
+            // 修改
+            BeanUtils.copyProperties(updateFavoriteDto, favorite);
+            favoriteMapper.update(favorite);
+        }
     }
 
     @Override
@@ -80,6 +88,23 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public void cancelFavoriteVideo(Integer fid, Integer vid) {
         favoriteMapper.deleteFavoriteVideoById(fid,vid);
+    }
+
+    @Override
+    public Favorite add(Integer userId, String defaultFavoriteName, String defaultFavoriteDescription) {
+        Favorite favorite = new Favorite();
+        favorite.setName(SystemConstant.DEFAULT_FAVORITE_NAME);
+        favorite.setOpen(SystemConstant.FAVORITE_PUBLIC);
+        favorite.setUserId(userId);
+        favorite.setSize(0);
+        favorite.setDescription(SystemConstant.DEFAULT_FAVORITE_DESCRIPTION);
+        favoriteMapper.insert(favorite);
+
+        return  favorite;
+    }
+
+    public Favorite add(Integer userId) {
+        return add(userId, SystemConstant.DEFAULT_FAVORITE_NAME, SystemConstant.DEFAULT_FAVORITE_DESCRIPTION);
     }
 
 }
