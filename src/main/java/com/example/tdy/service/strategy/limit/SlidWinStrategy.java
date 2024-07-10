@@ -31,7 +31,8 @@ public class SlidWinStrategy implements AccessLimitStrategy {
     @Override
     public void doLimit(AccessLimit accessLimit) throws BaseException {
         Integer userId = BaseContext.getCurrentId();
-        String key = RedisConstant.ACCESS_LIMIT_SLIDWIN + userId;
+        String method = accessLimit.method();
+        String key = RedisConstant.ACCESS_LIMIT_SLIDWIN + method + ":" + userId;
 
         int count = accessLimit.count();
         TimeUnit timeUnit = accessLimit.timeUnit();

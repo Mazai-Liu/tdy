@@ -28,9 +28,7 @@ public class TextAudit extends AbstractAudit {
             "    },\n" +
             "    \"params\": {\n" +
             "        \"scenes\": [\n" +
-            "            \"pulp\",\n" +
-            "            \"terror\",\n" +
-            "            \"politician\"\n" +
+            "            \"antispam\",\n" +
             "        ]\n" +
             "    }\n" +
             "}";

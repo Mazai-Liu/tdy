@@ -7,6 +7,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,11 @@ public class QiniuUtil {
 
     public static final String PROTOCOL = "http";
 
+    private static final long MAX_FILE_SIZE = 20 * 1024 * 1024;
+
+    private static final long UP_TOKEN_EXPIRE = 3 * 60;
+    private static final String ALLOW_MIME_TYPE = "image/*;video/*";
+
     private static final Configuration CFG;
 
     static {
@@ -38,7 +44,12 @@ public class QiniuUtil {
 
     public String getFileToken() {
         Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
-        return auth.uploadToken(BUCKET_NAME);
+
+        StringMap policy = new StringMap();
+        policy.put("fsizeLimit", MAX_FILE_SIZE);
+        policy.put("mimeLimit", ALLOW_MIME_TYPE);
+
+        return auth.uploadToken(BUCKET_NAME, null, UP_TOKEN_EXPIRE, policy);
     }
 
     public Auth getAuth() {

@@ -17,5 +17,7 @@ import java.util.concurrent.TimeUnit;
 public @interface AccessLimit {
     int time();
     int count();
+
+    String method();
     TimeUnit timeUnit() default TimeUnit.SECONDS;
 }
