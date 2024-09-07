@@ -82,7 +82,7 @@ public class FileServiceImpl implements FileService {
         // 七牛云需要控制用于回源鉴权
 
         String fileKey;
-        // Coze
+        // Coze or others
         if((fileKey = file.getFileKey()).startsWith("http")) {
             file.setFileKey(fileKey);
         } else {
@@ -107,11 +107,11 @@ public class FileServiceImpl implements FileService {
 
 
     public String generateFileKey(String key) {
-//        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
+        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
         // 回源鉴权
-        String uuid = UUID.randomUUID().toString();
-        LocalCache.set(uuid, true);
-        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key + "?uuid=" + uuid;
+//        String uuid = UUID.randomUUID().toString();
+//        LocalCache.set(uuid, true);
+//        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key + "?uuid=" + uuid;
     }
 
 }
