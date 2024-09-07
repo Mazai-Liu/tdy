@@ -78,7 +78,9 @@ public class LoginServiceImpl implements LoginService {
         getAvatarFileId(user);
 
 
+
         Favorite favorite = favoriteService.add(user.getId(), SystemConstant.DEFAULT_FAVORITE_NAME, SystemConstant.DEFAULT_FAVORITE_DESCRIPTION);
+
 
 
         logger.info("用户注册成功：{}", user);

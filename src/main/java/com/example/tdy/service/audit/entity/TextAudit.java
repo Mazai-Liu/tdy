@@ -1,6 +1,7 @@
 package com.example.tdy.service.audit.entity;
 
 
+
 import com.alibaba.fastjson.JSON;
 import com.example.tdy.entity.Video;
 import com.example.tdy.entity.resp.audit.ResultJson;
@@ -62,4 +63,5 @@ public class TextAudit extends AbstractAudit {
 
         return post(client, AUDIT_API_URL, bodyByte);
     }
+
 }
