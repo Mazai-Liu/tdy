@@ -78,7 +78,7 @@ public class CommentServiceImpl implements CommentService {
     private List<Comment> buildComments(Integer videoId, List<Comment> comments) {
         comments.stream().forEach(comment -> {
             // 设置用户信息
-           comment.setUserVO(userService.getUserVoById(comment.getUserId()));
+           comment.setUser(userService.getUserVoById(comment.getUserId()));
 //            comment.setUserVO(userService.getUserVoById(3));
 
             // 设置回复
@@ -108,7 +108,7 @@ public class CommentServiceImpl implements CommentService {
 
         List<Comment> replies = commentMapper.selectByDto(new CommentListDto(videoId, rootId, 0, 2));
         replies.forEach(reply -> {
-          reply.setUserVO(userService.getUserVoById(reply.getUserId()));
+          reply.setUser(userService.getUserVoById(reply.getUserId()));
           buildTime(reply);
           if(reply.getUserId().equals(currentId))
               reply.setReplicable(0);

@@ -27,7 +27,7 @@ public class Comment {
     private Integer replicable = 1;
 
     private String content;
-    private UserVO userVO;
+    private UserVO user;
     private String label;
 
     private Integer likes = 0;

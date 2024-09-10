@@ -133,6 +133,7 @@ public class VideoServiceImpl implements VideoService {
 
             // 填充视频时长
             String realUrl = fileService.getFileById(Integer.parseInt(video.getUrl())).getFileKey();
+            logger.info("填充时长：{}", realUrl);
             video.setDuration(FileUtil.getDuration(realUrl));
 
             // 填充时间
@@ -226,11 +227,14 @@ public class VideoServiceImpl implements VideoService {
         boolean judged = favoriteService.judgeFavoriteVideoState(fid, vid);
         if(judged==false){
             favoriteService.addFavoriteVideo(fid,vid);
-            return 1;//收藏
+
         }else {
             favoriteService.cancelFavoriteVideo(fid,vid);
-            return 0;//取消收藏
         }
+
+        favoriteMapper.plusFavorites(vid, judged ? -1 : 1);
+
+        return judged ? 0 : 1;
     }
     @Override
     public List<Video> getByFavoriteId(Integer fid) {
@@ -363,11 +367,13 @@ public class VideoServiceImpl implements VideoService {
         //为true 说明没点赞
         if (judged == true) {
             likeService.addLike(uid,vid);
-            return 1;
         }else {//已经点过了
             likeService.cancelLike(uid,vid);
-            return 0;
         }
+
+        videoMapper.plusLike(vid, judged ? 1 : -1);
+
+        return judged ? 1 : 0;
     }
 
     @Override

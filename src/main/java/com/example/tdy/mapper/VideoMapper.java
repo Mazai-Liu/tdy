@@ -50,4 +50,7 @@ public interface VideoMapper {
 
     @Update("update video set shares = shares + 1 where id = #{vid}")
     void share(Integer vid);
+
+    @Update("update video set likes = likes + #{count} where id = #{vid}")
+    void plusLike(@Param("vid") Integer vid, @Param("count") int count);
 }
