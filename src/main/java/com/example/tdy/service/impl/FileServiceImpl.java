@@ -107,11 +107,11 @@ public class FileServiceImpl implements FileService {
 
 
     public String generateFileKey(String key) {
-//        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
+        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key;
         // 回源鉴权
-        String uuid = UUID.randomUUID().toString();
-        LocalCache.set(uuid, true);
-        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key + "?uuid=" + uuid;
+//        String uuid = UUID.randomUUID().toString();
+//        LocalCache.set(uuid, true);
+//        return QiniuUtil.PROTOCOL + "://" + QiniuUtil.CNAME + "/" + key + "?uuid=" + uuid;
     }
 
 }

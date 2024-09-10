@@ -39,6 +39,7 @@ public class TextAudit extends AbstractAudit {
 //        AuditResult auditResult = process(video.getTitle() + "——" + video.getDescription());
         AuditResult auditResult = new AuditResult("成功", AuditStatus.PASS);
 
+
         logger.info("auditResult: {}", auditResult);
         return auditResult;
     }
