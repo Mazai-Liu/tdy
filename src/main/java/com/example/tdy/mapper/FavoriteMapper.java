@@ -37,4 +37,7 @@ public interface FavoriteMapper {
     FavoriteVideo  getFavoriteVideoById(@Param("fid") Integer fid, @Param("vid") Integer vid);
     @Delete("delete from favorite_video where favorite_id =#{fid} and video_id = #{vid} ")
     void deleteFavoriteVideoById(@Param("fid") Integer fid, @Param("vid") Integer vid);
+
+    @Update("update video set favorites = favorites + #{count} where id = #{vid}")
+    void plusFavorites(@Param("vid") Integer vid, @Param("count") int count);
 }
