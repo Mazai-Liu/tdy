@@ -69,6 +69,7 @@
     </update>
     <select id="selectByUserId" resultType="com.example.tdy.entity.Video">
         select * from video where user_id = #{userId}
+        order by create_time desc
     </select>
     <select id="selectByIds" resultType="com.example.tdy.entity.Video">
         select * from video where id in
